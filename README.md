@@ -5,6 +5,13 @@ go kratos seckill system
 
 ## 整体模块功能和任务
 
+- [ ] 搭建MySQL服务器
+- [ ] 搭建redis服务器
+- [ ] 搭建消息队列服务器
+- [ ] 搭建配置中心服务
+- [ ] 搭建网关服务
+- [ ] 搭建服务发现
+
 - [ ] 用户登录&注册
 - [ ] 用户中心
 - [ ] 用户订单列表和详情
@@ -41,3 +48,8 @@ go kratos seckill system
 ## 相关资料
 
 [项目工程化参考](https://github.com/go-kratos/beer-shop)
+
+
+## ent的使用
+
+

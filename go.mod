@@ -3,6 +3,7 @@ module github.com/helloMJW/seckill
 go 1.16
 
 require (
+	entgo.io/ent v0.8.0 // indirect
 	github.com/fatih/color v1.12.0 // indirect
 	github.com/go-kratos/kratos/cmd/kratos/v2 v2.0.0-20210603085655-4860f4263740 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
