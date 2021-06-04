@@ -24,8 +24,9 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 
 func (r *userRepo) GetUser(ctx context.Context, id int64) (*biz.User, error) {
 	po, err := r.data.db.User.Get(ctx, id)
+	r.log.Info("data/user: ", po, err)
 	if err != nil {
 		return nil, err
 	}
-	return &biz.User{Id: po.ID}, err
+	return &biz.User{Id: po.ID, Username: po.Username}, err
 }

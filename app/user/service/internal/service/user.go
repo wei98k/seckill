@@ -3,7 +3,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	pb "service/api/user/v1"
 )
 
@@ -18,8 +17,12 @@ func (s *UserService) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest)
 	return &pb.DeleteUserReply{}, nil
 }
 func (s *UserService) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserReply, error) {
-	fmt.Println("get-user")
-	return &pb.GetUserReply{}, nil
+	rv, err := s.uc.Get(ctx, req.Id)
+	s.log.Info("getuser request: ", rv, req)
+	return &pb.GetUserReply{
+		Id:       rv.Id,
+		Username: rv.Username,
+	}, err
 }
 func (s *UserService) ListUser(ctx context.Context, req *pb.ListUserRequest) (*pb.ListUserReply, error) {
 	return &pb.ListUserReply{}, nil

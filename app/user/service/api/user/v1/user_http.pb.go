@@ -38,7 +38,7 @@ func NewUserHandler(srv UserHandler, opts ...http1.HandleOption) http.Handler {
 	}
 	r := mux.NewRouter()
 
-	r.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/api.user.v1.User/CreateUser", func(w http.ResponseWriter, r *http.Request) {
 		var in CreateUserRequest
 		if err := h.Decode(r, &in); err != nil {
 			h.Error(w, r, err)
@@ -60,7 +60,7 @@ func NewUserHandler(srv UserHandler, opts ...http1.HandleOption) http.Handler {
 		if err := h.Encode(w, r, reply); err != nil {
 			h.Error(w, r, err)
 		}
-	}).Methods("GET")
+	}).Methods("POST")
 
 	r.HandleFunc("/api.user.v1.User/UpdateUser", func(w http.ResponseWriter, r *http.Request) {
 		var in UpdateUserRequest
@@ -110,9 +110,14 @@ func NewUserHandler(srv UserHandler, opts ...http1.HandleOption) http.Handler {
 		}
 	}).Methods("POST")
 
-	r.HandleFunc("/api.user.v1.User/GetUser", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/user/{id}", func(w http.ResponseWriter, r *http.Request) {
 		var in GetUserRequest
 		if err := h.Decode(r, &in); err != nil {
+			h.Error(w, r, err)
+			return
+		}
+
+		if err := binding.BindVars(mux.Vars(r), &in); err != nil {
 			h.Error(w, r, err)
 			return
 		}
@@ -132,7 +137,7 @@ func NewUserHandler(srv UserHandler, opts ...http1.HandleOption) http.Handler {
 		if err := h.Encode(w, r, reply); err != nil {
 			h.Error(w, r, err)
 		}
-	}).Methods("POST")
+	}).Methods("GET")
 
 	r.HandleFunc("/api.user.v1.User/ListUser", func(w http.ResponseWriter, r *http.Request) {
 		var in ListUserRequest
@@ -182,10 +187,10 @@ func NewUserHTTPClient(client *http1.Client) UserHTTPClient {
 }
 
 func (c *UserHTTPClientImpl) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...http1.CallOption) (out *CreateUserReply, err error) {
-	path := binding.EncodePath("GET", "/user", in)
+	path := binding.EncodePath("POST", "/api.user.v1.User/CreateUser", in)
 	out = &CreateUserReply{}
 
-	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("GET"), http1.PathPattern("/user"))
+	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("POST"), http1.PathPattern("/api.user.v1.User/CreateUser"))
 
 	return
 }
@@ -200,10 +205,10 @@ func (c *UserHTTPClientImpl) DeleteUser(ctx context.Context, in *DeleteUserReque
 }
 
 func (c *UserHTTPClientImpl) GetUser(ctx context.Context, in *GetUserRequest, opts ...http1.CallOption) (out *GetUserReply, err error) {
-	path := binding.EncodePath("POST", "/api.user.v1.User/GetUser", in)
+	path := binding.EncodePath("GET", "/user/{id}", in)
 	out = &GetUserReply{}
 
-	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("POST"), http1.PathPattern("/api.user.v1.User/GetUser"))
+	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("GET"), http1.PathPattern("/user/{id}"))
 
 	return
 }

@@ -9,14 +9,15 @@ option java_multiple_files = true;
 option java_package = "api.user.v1";
 
 service User {
-    rpc CreateUser (CreateUserRequest) returns (CreateUserReply) {
-        option (google.api.http) = {
-            get: "/user"
-        };
-    }
+    rpc CreateUser (CreateUserRequest) returns (CreateUserReply);
+
     rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply);
     rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply);
-    rpc GetUser (GetUserRequest) returns (GetUserReply);
+    rpc GetUser (GetUserRequest) returns (GetUserReply) {
+        option (google.api.http) = {
+            get: "/user/{id}",
+        };
+    }
     rpc ListUser (ListUserRequest) returns (ListUserReply);
 }
 
@@ -33,7 +34,10 @@ message GetUserRequest {
     int64 id = 1;
 }
 
-message GetUserReply {}
+message GetUserReply {
+    int64 id = 1;
+    string username = 2;
+}
 
 message ListUserRequest {}
 message ListUserReply {}
