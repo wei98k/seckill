@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package api.goods.service.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/helloMJW/seckill/api/goods/service/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.goods.service.v1";
+
+service Goods {
+    rpc CreateGoods (CreateGoodsRequest) returns (CreateGoodsReply);
+    rpc UpdateGoods (UpdateGoodsRequest) returns (UpdateGoodsReply);
+    rpc DeleteGoods (DeleteGoodsRequest) returns (DeleteGoodsReply);
+    rpc GetGoods (GetGoodsRequest) returns (GetGoodsReply) {
+        option (google.api.http) = {
+            post: "/goods",
+        };
+    }
+    rpc ListGoods (ListGoodsRequest) returns (ListGoodsReply);
+}
+
+message CreateGoodsRequest {}
+message CreateGoodsReply {}
+
+message UpdateGoodsRequest {}
+message UpdateGoodsReply {}
+
+message DeleteGoodsRequest {}
+message DeleteGoodsReply {}
+
+message GetGoodsRequest {
+    int64 id = 1;
+}
+message GetGoodsReply {
+    int64 id = 1;
+    string title = 2;
+}
+
+message ListGoodsRequest {}
+message ListGoodsReply {}

@@ -3,6 +3,20 @@
 go kratos seckill system
 
 
+## Client-API
+
+- [x] 用户登录API
+- [x] 用户注册API
+- [ ] 商品详情API
+- [ ] 商品下单API
+- [ ] 秒杀商品API
+- [ ] 商品列表API
+- [ ] 添加地址API
+- [ ] 修改地址API
+- [ ] 删除地址API
+- [ ] 查看地址API
+
+
 ## 整体模块功能和任务
 
 - [x] 搭建MySQL服务器
