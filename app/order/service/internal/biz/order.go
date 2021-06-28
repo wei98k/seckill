@@ -8,6 +8,7 @@ import (
 type Order struct {
 	Gid int64
 	Amount int64
+	Sn string
 }
 
 type OrderRepo interface {
