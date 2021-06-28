@@ -6,9 +6,9 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	pb "service/api/user/v1"
-	"service/internal/conf"
-	"service/internal/service"
+	pb "github.com/helloMJW/seckill/api/user/service/v1"
+	"github.com/helloMJW/seckill/app/user/service/internal/conf"
+	"github.com/helloMJW/seckill/app/user/service/internal/service"
 )
 
 // NewGRPCServer new a gRPC server.

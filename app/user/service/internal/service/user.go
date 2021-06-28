@@ -3,11 +3,17 @@ package service
 
 import (
 	"context"
-	pb "service/api/user/v1"
+	pb "github.com/helloMJW/seckill/api/user/service/v1"
+	"github.com/helloMJW/seckill/app/user/service/internal/biz"
 )
 
 
 func (s *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserReply, error) {
+	u := &biz.RegUser{Username: req.Username, PasswordHash: req.Password}
+	rv, err := s.uc.Create(ctx, u)
+
+	s.log.Infof("service/user/CreateUser: rv: %v, err: %v", rv, err)
+
 	return &pb.CreateUserReply{}, nil
 }
 func (s *UserService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserReply, error) {

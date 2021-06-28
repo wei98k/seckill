@@ -1,0 +1,21 @@
+POST http://localhost:80/api/item
+Content-Type: application/json
+
+{}
+
+### 获取用户信息
+GET {{host}}/user/3
+Accept: application/json
+
+### 用户注册
+POST http://127.0.0.1:8000/user
+Content-Type: application/json
+
+{"username": "dddddss123", "password": "123123a"}
+
+<> 2021-06-25T145006.200.json
+<> 2021-06-25T144859.500.json
+<> 2021-06-25T112145.500.json
+
+###
+

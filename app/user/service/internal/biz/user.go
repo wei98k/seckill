@@ -10,8 +10,14 @@ type User struct {
 	Username string
 }
 
+type RegUser struct {
+	Username string
+	PasswordHash string
+}
+
 type UserRepo interface {
 	GetUser(ctx context.Context, id int64) (*User, error)
+	CreateUser(ctx context.Context, user *RegUser) (id int64, err error)
 }
 
 type UserUsecase struct {
@@ -26,4 +32,8 @@ func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
 
 func (uc *UserUsecase) Get(ctx context.Context, id int64) (*User, error) {
 	return uc.repo.GetUser(ctx, id)
+}
+
+func (uc *UserUsecase) Create(ctx context.Context, user *RegUser) (id int64, err error) {
+	return uc.repo.CreateUser(ctx, user)
 }

@@ -2,10 +2,12 @@ package data
 
 import (
 	"context"
-	"service/internal/conf"
+	"github.com/go-redis/redis/v8"
+	"github.com/go-redis/redis/extra/redisotel"
+	"github.com/helloMJW/seckill/app/user/service/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
-	"service/internal/data/ent"
+	"github.com/helloMJW/seckill/app/user/service/internal/data/ent"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -18,6 +20,8 @@ type Data struct {
 	// TODO warpped database client
 	//db *ent.Client
 	db *ent.Client
+
+	rdb *redis.Client
 }
 
 // NewData .
@@ -37,8 +41,22 @@ func NewData(conf *conf.Data, logger log.Logger) (*Data, func(), error) {
 		log.Errorf("failed creating schema resources: %v", err)
 		return nil, nil, err
 	}
+
+
+	// redis
+	rdb := redis.NewClient(&redis.Options{
+		Addr:         conf.Redis.Addr,
+		Password:     conf.Redis.Password,
+		DB:           int(conf.Redis.Db),
+		WriteTimeout: conf.Redis.WriteTimeout.AsDuration(),
+		ReadTimeout:  conf.Redis.ReadTimeout.AsDuration(),
+	})
+	rdb.AddHook(redisotel.TracingHook{})
+
+
 	d := &Data{
 		db: client,
+		rdb: rdb,
 	}
 	return d, func() {
 		if err := d.db.Close(); err != nil {

@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package api.user.service.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/helloMJW/seckill/api/user/service/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.user.service.v1";
+
+service User {
+
+    rpc CreateUser (CreateUserRequest) returns (CreateUserReply) {
+        option (google.api.http) = {
+            post: "/user",
+        };
+    }
+
+    rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply);
+    rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply);
+    rpc GetUser (GetUserRequest) returns (GetUserReply) {
+        option (google.api.http) = {
+            get: "/user/{id}",
+        };
+    }
+    rpc ListUser (ListUserRequest) returns (ListUserReply);
+}
+
+message CreateUserRequest {
+    string username = 1;
+    string password = 2;
+}
+message CreateUserReply {}
+
+message UpdateUserRequest {}
+message UpdateUserReply {}
+
+message DeleteUserRequest {}
+message DeleteUserReply {}
+
+message GetUserRequest {
+    int64 id = 1;
+}
+
+message GetUserReply {
+    int64 id = 1;
+    string username = 2;
+}
+
+message ListUserRequest {}
+message ListUserReply {}

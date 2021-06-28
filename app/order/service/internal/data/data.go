@@ -1,23 +1,48 @@
 package data
 
 import (
-	"service/internal/conf"
+	"context"
+	"github.com/helloMJW/seckill/app/order/service/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
+	"github.com/helloMJW/seckill/app/order/service/internal/data/ent"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewGreeterRepo)
+var ProviderSet = wire.NewSet(NewData, NewOrderRepo)
 
 // Data .
 type Data struct {
 	// TODO warpped database client
+	db *ent.Client
 }
 
 // NewData .
-func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
-	cleanup := func() {
-		logger.Log(log.LevelInfo, "closing the data resources")
+func NewData(conf *conf.Data, logger log.Logger) (*Data, func(), error) {
+
+	log := log.NewHelper(log.With(logger, "module", "server-service/data"))
+
+	client, err := ent.Open(
+		conf.Database.Driver,
+		conf.Database.Source,
+	)
+	if err != nil {
+		log.Errorf("failed opening connection to sqlite: %v", err)
+		return nil, nil, err
 	}
-	return &Data{}, cleanup, nil
+	// Run the auto migration tool.
+	if err := client.Schema.Create(context.Background()); err != nil {
+		log.Errorf("failed creating schema resources: %v", err)
+		return nil, nil, err
+	}
+
+	d := &Data{
+		db: client,
+	}
+	return d, func() {
+		if err := d.db.Close(); err != nil {
+			log.Error(err)
+		}
+	}, nil
 }

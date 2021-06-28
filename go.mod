@@ -3,16 +3,19 @@ module github.com/helloMJW/seckill
 go 1.16
 
 require (
-	entgo.io/ent v0.8.0 // indirect
-	github.com/fatih/color v1.12.0 // indirect
-	github.com/go-kratos/kratos/cmd/kratos/v2 v2.0.0-20210603085655-4860f4263740 // indirect
-	github.com/mattn/go-isatty v0.0.13 // indirect
-	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
-	github.com/spf13/cobra v1.1.3 // indirect
-	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
-	golang.org/x/mod v0.4.2 // indirect
-	golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40 // indirect
-	golang.org/x/term v0.0.0-20210503060354-a79de5458b56 // indirect
-	golang.org/x/text v0.3.6 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+	entgo.io/ent v0.8.0
+	github.com/go-kratos/kratos/v2 v2.0.0-rc1
+	github.com/go-redis/redis/extra/redisotel v0.3.0
+	github.com/go-redis/redis/v8 v8.10.0
+	github.com/go-sql-driver/mysql v1.6.0
+	github.com/google/wire v0.5.0
+	github.com/gorilla/mux v1.8.0
+	github.com/kr/text v0.2.0 // indirect
+	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	golang.org/x/sys v0.0.0-20210603125802-9665404d3644 // indirect
+	google.golang.org/genproto v0.0.0-20210603172842-58e84a565dcf
+	google.golang.org/grpc v1.38.0
+	google.golang.org/protobuf v1.26.0
+	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 )
