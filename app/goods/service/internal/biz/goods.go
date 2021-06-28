@@ -8,6 +8,7 @@ import (
 type Goods struct {
 	Id int64
 	Title string
+	Intro string
 }
 
 type GoodsUsecase struct {

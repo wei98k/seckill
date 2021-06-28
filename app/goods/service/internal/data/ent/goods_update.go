@@ -33,6 +33,12 @@ func (gu *GoodsUpdate) SetTitle(s string) *GoodsUpdate {
 	return gu
 }
 
+// SetIntro sets the "intro" field.
+func (gu *GoodsUpdate) SetIntro(s string) *GoodsUpdate {
+	gu.mutation.SetIntro(s)
+	return gu
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (gu *GoodsUpdate) SetCreatedAt(t time.Time) *GoodsUpdate {
 	gu.mutation.SetCreatedAt(t)
@@ -142,6 +148,13 @@ func (gu *GoodsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: goods.FieldTitle,
 		})
 	}
+	if value, ok := gu.mutation.Intro(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: goods.FieldIntro,
+		})
+	}
 	if value, ok := gu.mutation.CreatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -178,6 +191,12 @@ type GoodsUpdateOne struct {
 // SetTitle sets the "title" field.
 func (guo *GoodsUpdateOne) SetTitle(s string) *GoodsUpdateOne {
 	guo.mutation.SetTitle(s)
+	return guo
+}
+
+// SetIntro sets the "intro" field.
+func (guo *GoodsUpdateOne) SetIntro(s string) *GoodsUpdateOne {
+	guo.mutation.SetIntro(s)
 	return guo
 }
 
@@ -312,6 +331,13 @@ func (guo *GoodsUpdateOne) sqlSave(ctx context.Context) (_node *Goods, err error
 			Type:   field.TypeString,
 			Value:  value,
 			Column: goods.FieldTitle,
+		})
+	}
+	if value, ok := guo.mutation.Intro(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: goods.FieldIntro,
 		})
 	}
 	if value, ok := guo.mutation.CreatedAt(); ok {

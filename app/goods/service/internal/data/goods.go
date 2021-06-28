@@ -21,5 +21,12 @@ func NewGoodsRepo(data *Data, logger log.Logger) biz.GoodsRepo {
 }
 
 func (g goodsRepo) GetGoods(ctx context.Context, id int64) (*biz.Goods, error) {
-	panic("implement me")
+	vo, err := g.data.db.Goods.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return &biz.Goods{
+		Title: vo.Title,
+		Intro: vo.Intro,
+	}, nil
 }

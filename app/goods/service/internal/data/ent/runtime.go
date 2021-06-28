@@ -16,11 +16,11 @@ func init() {
 	goodsFields := schema.Goods{}.Fields()
 	_ = goodsFields
 	// goodsDescCreatedAt is the schema descriptor for created_at field.
-	goodsDescCreatedAt := goodsFields[2].Descriptor()
+	goodsDescCreatedAt := goodsFields[3].Descriptor()
 	// goods.DefaultCreatedAt holds the default value on creation for the created_at field.
 	goods.DefaultCreatedAt = goodsDescCreatedAt.Default.(func() time.Time)
 	// goodsDescUpdatedAt is the schema descriptor for updated_at field.
-	goodsDescUpdatedAt := goodsFields[3].Descriptor()
+	goodsDescUpdatedAt := goodsFields[4].Descriptor()
 	// goods.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	goods.DefaultUpdatedAt = goodsDescUpdatedAt.Default.(func() time.Time)
 }

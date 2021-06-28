@@ -7,7 +7,7 @@ go kratos seckill system
 
 - [x] 用户登录API
 - [x] 用户注册API
-- [ ] 商品详情API
+- [x] 商品详情API
 - [ ] 商品下单API
 - [ ] 秒杀商品API
 - [ ] 商品列表API

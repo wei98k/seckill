@@ -26,6 +26,12 @@ func (gc *GoodsCreate) SetTitle(s string) *GoodsCreate {
 	return gc
 }
 
+// SetIntro sets the "intro" field.
+func (gc *GoodsCreate) SetIntro(s string) *GoodsCreate {
+	gc.mutation.SetIntro(s)
+	return gc
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (gc *GoodsCreate) SetCreatedAt(t time.Time) *GoodsCreate {
 	gc.mutation.SetCreatedAt(t)
@@ -127,6 +133,9 @@ func (gc *GoodsCreate) check() error {
 	if _, ok := gc.mutation.Title(); !ok {
 		return &ValidationError{Name: "title", err: errors.New("ent: missing required field \"title\"")}
 	}
+	if _, ok := gc.mutation.Intro(); !ok {
+		return &ValidationError{Name: "intro", err: errors.New("ent: missing required field \"intro\"")}
+	}
 	if _, ok := gc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New("ent: missing required field \"created_at\"")}
 	}
@@ -173,6 +182,14 @@ func (gc *GoodsCreate) createSpec() (*Goods, *sqlgraph.CreateSpec) {
 			Column: goods.FieldTitle,
 		})
 		_node.Title = value
+	}
+	if value, ok := gc.mutation.Intro(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: goods.FieldIntro,
+		})
+		_node.Intro = value
 	}
 	if value, ok := gc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

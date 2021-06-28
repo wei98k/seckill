@@ -16,8 +16,8 @@
     "application/json"
   ],
   "paths": {
-    "/goods": {
-      "post": {
+    "/goods/{id}": {
+      "get": {
         "operationId": "Goods_GetGoods",
         "responses": {
           "200": {
@@ -33,6 +33,15 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
         "tags": [
           "Goods"
         ]
@@ -84,6 +93,9 @@
           "format": "int64"
         },
         "title": {
+          "type": "string"
+        },
+        "intro": {
           "type": "string"
         }
       }

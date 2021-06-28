@@ -33,6 +33,7 @@ type GoodsMutation struct {
 	typ           string
 	id            *int64
 	title         *string
+	intro         *string
 	created_at    *time.Time
 	updated_at    *time.Time
 	clearedFields map[string]struct{}
@@ -162,6 +163,42 @@ func (m *GoodsMutation) ResetTitle() {
 	m.title = nil
 }
 
+// SetIntro sets the "intro" field.
+func (m *GoodsMutation) SetIntro(s string) {
+	m.intro = &s
+}
+
+// Intro returns the value of the "intro" field in the mutation.
+func (m *GoodsMutation) Intro() (r string, exists bool) {
+	v := m.intro
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIntro returns the old "intro" field's value of the Goods entity.
+// If the Goods object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GoodsMutation) OldIntro(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldIntro is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldIntro requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIntro: %w", err)
+	}
+	return oldValue.Intro, nil
+}
+
+// ResetIntro resets all changes to the "intro" field.
+func (m *GoodsMutation) ResetIntro() {
+	m.intro = nil
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (m *GoodsMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -248,9 +285,12 @@ func (m *GoodsMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GoodsMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.title != nil {
 		fields = append(fields, goods.FieldTitle)
+	}
+	if m.intro != nil {
+		fields = append(fields, goods.FieldIntro)
 	}
 	if m.created_at != nil {
 		fields = append(fields, goods.FieldCreatedAt)
@@ -268,6 +308,8 @@ func (m *GoodsMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case goods.FieldTitle:
 		return m.Title()
+	case goods.FieldIntro:
+		return m.Intro()
 	case goods.FieldCreatedAt:
 		return m.CreatedAt()
 	case goods.FieldUpdatedAt:
@@ -283,6 +325,8 @@ func (m *GoodsMutation) OldField(ctx context.Context, name string) (ent.Value, e
 	switch name {
 	case goods.FieldTitle:
 		return m.OldTitle(ctx)
+	case goods.FieldIntro:
+		return m.OldIntro(ctx)
 	case goods.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case goods.FieldUpdatedAt:
@@ -302,6 +346,13 @@ func (m *GoodsMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTitle(v)
+		return nil
+	case goods.FieldIntro:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIntro(v)
 		return nil
 	case goods.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -368,6 +419,9 @@ func (m *GoodsMutation) ResetField(name string) error {
 	switch name {
 	case goods.FieldTitle:
 		m.ResetTitle()
+		return nil
+	case goods.FieldIntro:
+		m.ResetIntro()
 		return nil
 	case goods.FieldCreatedAt:
 		m.ResetCreatedAt()

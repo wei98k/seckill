@@ -13,6 +13,8 @@ const (
 	FieldID = "id"
 	// FieldTitle holds the string denoting the title field in the database.
 	FieldTitle = "title"
+	// FieldIntro holds the string denoting the intro field in the database.
+	FieldIntro = "intro"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -25,6 +27,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldTitle,
+	FieldIntro,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }

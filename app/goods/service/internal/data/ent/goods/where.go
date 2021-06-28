@@ -99,6 +99,13 @@ func Title(v string) predicate.Goods {
 	})
 }
 
+// Intro applies equality check predicate on the "intro" field. It's identical to IntroEQ.
+func Intro(v string) predicate.Goods {
+	return predicate.Goods(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldIntro), v))
+	})
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Goods {
 	return predicate.Goods(func(s *sql.Selector) {
@@ -221,6 +228,117 @@ func TitleEqualFold(v string) predicate.Goods {
 func TitleContainsFold(v string) predicate.Goods {
 	return predicate.Goods(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldTitle), v))
+	})
+}
+
+// IntroEQ applies the EQ predicate on the "intro" field.
+func IntroEQ(v string) predicate.Goods {
+	return predicate.Goods(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldIntro), v))
+	})
+}
+
+// IntroNEQ applies the NEQ predicate on the "intro" field.
+func IntroNEQ(v string) predicate.Goods {
+	return predicate.Goods(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldIntro), v))
+	})
+}
+
+// IntroIn applies the In predicate on the "intro" field.
+func IntroIn(vs ...string) predicate.Goods {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Goods(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldIntro), v...))
+	})
+}
+
+// IntroNotIn applies the NotIn predicate on the "intro" field.
+func IntroNotIn(vs ...string) predicate.Goods {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Goods(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldIntro), v...))
+	})
+}
+
+// IntroGT applies the GT predicate on the "intro" field.
+func IntroGT(v string) predicate.Goods {
+	return predicate.Goods(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldIntro), v))
+	})
+}
+
+// IntroGTE applies the GTE predicate on the "intro" field.
+func IntroGTE(v string) predicate.Goods {
+	return predicate.Goods(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldIntro), v))
+	})
+}
+
+// IntroLT applies the LT predicate on the "intro" field.
+func IntroLT(v string) predicate.Goods {
+	return predicate.Goods(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldIntro), v))
+	})
+}
+
+// IntroLTE applies the LTE predicate on the "intro" field.
+func IntroLTE(v string) predicate.Goods {
+	return predicate.Goods(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldIntro), v))
+	})
+}
+
+// IntroContains applies the Contains predicate on the "intro" field.
+func IntroContains(v string) predicate.Goods {
+	return predicate.Goods(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldIntro), v))
+	})
+}
+
+// IntroHasPrefix applies the HasPrefix predicate on the "intro" field.
+func IntroHasPrefix(v string) predicate.Goods {
+	return predicate.Goods(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldIntro), v))
+	})
+}
+
+// IntroHasSuffix applies the HasSuffix predicate on the "intro" field.
+func IntroHasSuffix(v string) predicate.Goods {
+	return predicate.Goods(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldIntro), v))
+	})
+}
+
+// IntroEqualFold applies the EqualFold predicate on the "intro" field.
+func IntroEqualFold(v string) predicate.Goods {
+	return predicate.Goods(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldIntro), v))
+	})
+}
+
+// IntroContainsFold applies the ContainsFold predicate on the "intro" field.
+func IntroContainsFold(v string) predicate.Goods {
+	return predicate.Goods(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldIntro), v))
 	})
 }
 

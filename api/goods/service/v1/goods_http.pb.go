@@ -110,9 +110,14 @@ func NewGoodsHandler(srv GoodsHandler, opts ...http1.HandleOption) http.Handler 
 		}
 	}).Methods("POST")
 
-	r.HandleFunc("/goods", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/goods/{id}", func(w http.ResponseWriter, r *http.Request) {
 		var in GetGoodsRequest
 		if err := h.Decode(r, &in); err != nil {
+			h.Error(w, r, err)
+			return
+		}
+
+		if err := binding.BindVars(mux.Vars(r), &in); err != nil {
 			h.Error(w, r, err)
 			return
 		}
@@ -132,7 +137,7 @@ func NewGoodsHandler(srv GoodsHandler, opts ...http1.HandleOption) http.Handler 
 		if err := h.Encode(w, r, reply); err != nil {
 			h.Error(w, r, err)
 		}
-	}).Methods("POST")
+	}).Methods("GET")
 
 	r.HandleFunc("/api.goods.service.v1.Goods/ListGoods", func(w http.ResponseWriter, r *http.Request) {
 		var in ListGoodsRequest
@@ -200,10 +205,10 @@ func (c *GoodsHTTPClientImpl) DeleteGoods(ctx context.Context, in *DeleteGoodsRe
 }
 
 func (c *GoodsHTTPClientImpl) GetGoods(ctx context.Context, in *GetGoodsRequest, opts ...http1.CallOption) (out *GetGoodsReply, err error) {
-	path := binding.EncodePath("POST", "/goods", in)
+	path := binding.EncodePath("GET", "/goods/{id}", in)
 	out = &GetGoodsReply{}
 
-	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("POST"), http1.PathPattern("/goods"))
+	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("GET"), http1.PathPattern("/goods/{id}"))
 
 	return
 }

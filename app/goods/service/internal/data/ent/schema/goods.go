@@ -16,7 +16,8 @@ type Goods struct {
 func (Goods) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id"),
-		field.String("title"),
+		field.String("title").Comment("标题"),
+		field.String("intro").Comment("简介"),
 		field.Time("created_at").
 			Default(time.Now).SchemaType(map[string]string{
 			dialect.MySQL: "datetime",

@@ -17,7 +17,11 @@ type Goods struct {
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
 	// Title holds the value of the "title" field.
+	// 标题
 	Title string `json:"title,omitempty"`
+	// Intro holds the value of the "intro" field.
+	// 简介
+	Intro string `json:"intro,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -31,7 +35,7 @@ func (*Goods) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case goods.FieldID:
 			values[i] = new(sql.NullInt64)
-		case goods.FieldTitle:
+		case goods.FieldTitle, goods.FieldIntro:
 			values[i] = new(sql.NullString)
 		case goods.FieldCreatedAt, goods.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -61,6 +65,12 @@ func (_go *Goods) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
 			} else if value.Valid {
 				_go.Title = value.String
+			}
+		case goods.FieldIntro:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field intro", values[i])
+			} else if value.Valid {
+				_go.Intro = value.String
 			}
 		case goods.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -104,6 +114,8 @@ func (_go *Goods) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", _go.ID))
 	builder.WriteString(", title=")
 	builder.WriteString(_go.Title)
+	builder.WriteString(", intro=")
+	builder.WriteString(_go.Intro)
 	builder.WriteString(", created_at=")
 	builder.WriteString(_go.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", updated_at=")

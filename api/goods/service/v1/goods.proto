@@ -14,7 +14,7 @@ service Goods {
     rpc DeleteGoods (DeleteGoodsRequest) returns (DeleteGoodsReply);
     rpc GetGoods (GetGoodsRequest) returns (GetGoodsReply) {
         option (google.api.http) = {
-            post: "/goods",
+            get: "/goods/{id}",
         };
     }
     rpc ListGoods (ListGoodsRequest) returns (ListGoodsReply);
@@ -35,6 +35,7 @@ message GetGoodsRequest {
 message GetGoodsReply {
     int64 id = 1;
     string title = 2;
+    string intro = 3;
 }
 
 message ListGoodsRequest {}
