@@ -8,7 +8,7 @@ go kratos seckill system
 - [x] 用户登录API
 - [x] 用户注册API
 - [x] 商品详情API
-- [ ] 商品下单API
+- [x] 商品下单API
 - [ ] 秒杀商品API
 - [ ] 商品列表API
 - [ ] 添加地址API
@@ -24,7 +24,7 @@ go kratos seckill system
 - [ ] 搭建消息队列服务器
 - [ ] 搭建配置中心服务
 - [ ] 搭建网关服务
-- [ ] 搭建服务发现
+- [x] 搭建服务发现-nacos
 
 -----
 

@@ -5,12 +5,14 @@ go 1.16
 require (
 	entgo.io/ent v0.8.0
 	github.com/go-kratos/kratos/v2 v2.0.0-rc1
+	github.com/go-kratos/nacos v0.1.0
 	github.com/go-redis/redis/extra/redisotel v0.3.0
 	github.com/go-redis/redis/v8 v8.10.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/wire v0.5.0
 	github.com/gorilla/mux v1.8.0
 	github.com/kr/text v0.2.0 // indirect
+	github.com/nacos-group/nacos-sdk-go v1.0.8
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/sys v0.0.0-20210603125802-9665404d3644 // indirect
