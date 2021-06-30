@@ -48,6 +48,14 @@ go kratos seckill system
 - [ ] CI/CD
 - [ ] 压力测试
 
+## Q&A
+
+如何设计redis-key策略?
+
+如何解决超卖问题?
+
+
+
 ## 2021年06月04日14:28:27 任务
 
 - [x] ent完成用户表的CURD

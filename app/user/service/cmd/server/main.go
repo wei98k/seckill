@@ -3,18 +3,15 @@ package main
 import (
 	"flag"
 	"github.com/go-kratos/nacos/registry"
-	"github.com/nacos-group/nacos-sdk-go/clients"
-	"github.com/nacos-group/nacos-sdk-go/common/constant"
-	"github.com/nacos-group/nacos-sdk-go/vo"
 	"os"
 
-	"github.com/helloMJW/seckill/app/user/service/internal/conf"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/helloMJW/seckill/app/user/service/internal/conf"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -31,36 +28,7 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server) *kratos.App {
-
-
-	sc := []constant.ServerConfig{
-		*constant.NewServerConfig("192.168.2.174", 8848),
-	}
-
-	cc := &constant.ClientConfig{
-		NamespaceId:         "public", //namespace id
-		TimeoutMs:           5000,
-		NotLoadCacheAtStart: true,
-		LogDir:              "/tmp/nacos/log",
-		CacheDir:            "/tmp/nacos/cache",
-		RotateTime:          "1h",
-		MaxAge:              3,
-		LogLevel:            "debug",
-	}
-
-	// a more graceful way to create naming client
-	client, err := clients.NewNamingClient(
-		vo.NacosClientParam{
-			ClientConfig:  cc,
-			ServerConfigs: sc,
-		},
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	r := registry.New(client)
+func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, r *registry.Registry) *kratos.App {
 
 	return kratos.New(
 		kratos.Name("user"), //Name 变量

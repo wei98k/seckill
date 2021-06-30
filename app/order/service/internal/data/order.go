@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/helloMJW/seckill/app/order/service/internal/biz"
+
+	pb "github.com/helloMJW/seckill/api/user/service/v1"
 )
 
 var _ biz.OrderRepo = (*orderRepo)(nil)
@@ -27,6 +29,12 @@ func (o orderRepo) CreateOrder(ctx context.Context, order *biz.Order) error {
 	if err != nil {
 		return err
 	}
+
+	ucc := pb.NewUserClient(o.data.userRpc)
+
+	res1, err := ucc.GetUser(ctx, &pb.GetUserRequest{Id: 1})
+
+	o.log.Infof("nacos-client-api: ", res1, err)
 
 	o.log.Infof("order-create-result: %v", res)
 	return nil

@@ -2,15 +2,16 @@ package main
 
 import (
 	"flag"
+	"github.com/go-kratos/nacos/registry"
 	"os"
 
-	"github.com/helloMJW/seckill/app/order/service/internal/conf"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/helloMJW/seckill/app/order/service/internal/conf"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -27,16 +28,18 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server) *kratos.App {
+func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, rr *registry.Registry) *kratos.App {
+
 	return kratos.New(
-		kratos.Name(Name),
-		kratos.Version(Version),
+		kratos.Name("order"), // Name
+		kratos.Version("1.0.0"),
 		kratos.Metadata(map[string]string{}),
 		kratos.Logger(logger),
 		kratos.Server(
 			hs,
 			gs,
 		),
+		kratos.Registrar(rr),
 	)
 }
 
