@@ -14,6 +14,11 @@ service Order {
             post: "/order",
         };
     }
+    rpc CreateSeckillOrder (CreateSeckillOrderRequest) returns (CreateSeckillOrderReply) {
+        option (google.api.http) = {
+            post: "/seckill/order"
+        };
+    }
     rpc UpdateOrder (UpdateOrderRequest) returns (UpdateOrderReply);
     rpc DeleteOrder (DeleteOrderRequest) returns (DeleteOrderReply);
     rpc GetOrder (GetOrderRequest) returns (GetOrderReply);
@@ -25,6 +30,9 @@ message CreateOrderRequest {
     int64 amount = 2;
 }
 message CreateOrderReply {}
+
+message CreateSeckillOrderRequest {}
+message CreateSeckillOrderReply {}
 
 message UpdateOrderRequest {}
 message UpdateOrderReply {}

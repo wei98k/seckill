@@ -10,6 +10,8 @@ import (
 	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/migrate"
 
 	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/order"
+	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/seckillgoods"
+	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/seckillorder"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -22,6 +24,10 @@ type Client struct {
 	Schema *migrate.Schema
 	// Order is the client for interacting with the Order builders.
 	Order *OrderClient
+	// SeckillGoods is the client for interacting with the SeckillGoods builders.
+	SeckillGoods *SeckillGoodsClient
+	// SeckillOrder is the client for interacting with the SeckillOrder builders.
+	SeckillOrder *SeckillOrderClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -36,6 +42,8 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Order = NewOrderClient(c.config)
+	c.SeckillGoods = NewSeckillGoodsClient(c.config)
+	c.SeckillOrder = NewSeckillOrderClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -67,9 +75,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Order:  NewOrderClient(cfg),
+		ctx:          ctx,
+		config:       cfg,
+		Order:        NewOrderClient(cfg),
+		SeckillGoods: NewSeckillGoodsClient(cfg),
+		SeckillOrder: NewSeckillOrderClient(cfg),
 	}, nil
 }
 
@@ -87,8 +97,10 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		config: cfg,
-		Order:  NewOrderClient(cfg),
+		config:       cfg,
+		Order:        NewOrderClient(cfg),
+		SeckillGoods: NewSeckillGoodsClient(cfg),
+		SeckillOrder: NewSeckillOrderClient(cfg),
 	}, nil
 }
 
@@ -119,6 +131,8 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Order.Use(hooks...)
+	c.SeckillGoods.Use(hooks...)
+	c.SeckillOrder.Use(hooks...)
 }
 
 // OrderClient is a client for the Order schema.
@@ -209,4 +223,184 @@ func (c *OrderClient) GetX(ctx context.Context, id int64) *Order {
 // Hooks returns the client hooks.
 func (c *OrderClient) Hooks() []Hook {
 	return c.hooks.Order
+}
+
+// SeckillGoodsClient is a client for the SeckillGoods schema.
+type SeckillGoodsClient struct {
+	config
+}
+
+// NewSeckillGoodsClient returns a client for the SeckillGoods from the given config.
+func NewSeckillGoodsClient(c config) *SeckillGoodsClient {
+	return &SeckillGoodsClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `seckillgoods.Hooks(f(g(h())))`.
+func (c *SeckillGoodsClient) Use(hooks ...Hook) {
+	c.hooks.SeckillGoods = append(c.hooks.SeckillGoods, hooks...)
+}
+
+// Create returns a create builder for SeckillGoods.
+func (c *SeckillGoodsClient) Create() *SeckillGoodsCreate {
+	mutation := newSeckillGoodsMutation(c.config, OpCreate)
+	return &SeckillGoodsCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SeckillGoods entities.
+func (c *SeckillGoodsClient) CreateBulk(builders ...*SeckillGoodsCreate) *SeckillGoodsCreateBulk {
+	return &SeckillGoodsCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SeckillGoods.
+func (c *SeckillGoodsClient) Update() *SeckillGoodsUpdate {
+	mutation := newSeckillGoodsMutation(c.config, OpUpdate)
+	return &SeckillGoodsUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SeckillGoodsClient) UpdateOne(sg *SeckillGoods) *SeckillGoodsUpdateOne {
+	mutation := newSeckillGoodsMutation(c.config, OpUpdateOne, withSeckillGoods(sg))
+	return &SeckillGoodsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SeckillGoodsClient) UpdateOneID(id int64) *SeckillGoodsUpdateOne {
+	mutation := newSeckillGoodsMutation(c.config, OpUpdateOne, withSeckillGoodsID(id))
+	return &SeckillGoodsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SeckillGoods.
+func (c *SeckillGoodsClient) Delete() *SeckillGoodsDelete {
+	mutation := newSeckillGoodsMutation(c.config, OpDelete)
+	return &SeckillGoodsDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *SeckillGoodsClient) DeleteOne(sg *SeckillGoods) *SeckillGoodsDeleteOne {
+	return c.DeleteOneID(sg.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *SeckillGoodsClient) DeleteOneID(id int64) *SeckillGoodsDeleteOne {
+	builder := c.Delete().Where(seckillgoods.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SeckillGoodsDeleteOne{builder}
+}
+
+// Query returns a query builder for SeckillGoods.
+func (c *SeckillGoodsClient) Query() *SeckillGoodsQuery {
+	return &SeckillGoodsQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a SeckillGoods entity by its id.
+func (c *SeckillGoodsClient) Get(ctx context.Context, id int64) (*SeckillGoods, error) {
+	return c.Query().Where(seckillgoods.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SeckillGoodsClient) GetX(ctx context.Context, id int64) *SeckillGoods {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *SeckillGoodsClient) Hooks() []Hook {
+	return c.hooks.SeckillGoods
+}
+
+// SeckillOrderClient is a client for the SeckillOrder schema.
+type SeckillOrderClient struct {
+	config
+}
+
+// NewSeckillOrderClient returns a client for the SeckillOrder from the given config.
+func NewSeckillOrderClient(c config) *SeckillOrderClient {
+	return &SeckillOrderClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `seckillorder.Hooks(f(g(h())))`.
+func (c *SeckillOrderClient) Use(hooks ...Hook) {
+	c.hooks.SeckillOrder = append(c.hooks.SeckillOrder, hooks...)
+}
+
+// Create returns a create builder for SeckillOrder.
+func (c *SeckillOrderClient) Create() *SeckillOrderCreate {
+	mutation := newSeckillOrderMutation(c.config, OpCreate)
+	return &SeckillOrderCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SeckillOrder entities.
+func (c *SeckillOrderClient) CreateBulk(builders ...*SeckillOrderCreate) *SeckillOrderCreateBulk {
+	return &SeckillOrderCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SeckillOrder.
+func (c *SeckillOrderClient) Update() *SeckillOrderUpdate {
+	mutation := newSeckillOrderMutation(c.config, OpUpdate)
+	return &SeckillOrderUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SeckillOrderClient) UpdateOne(so *SeckillOrder) *SeckillOrderUpdateOne {
+	mutation := newSeckillOrderMutation(c.config, OpUpdateOne, withSeckillOrder(so))
+	return &SeckillOrderUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SeckillOrderClient) UpdateOneID(id int64) *SeckillOrderUpdateOne {
+	mutation := newSeckillOrderMutation(c.config, OpUpdateOne, withSeckillOrderID(id))
+	return &SeckillOrderUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SeckillOrder.
+func (c *SeckillOrderClient) Delete() *SeckillOrderDelete {
+	mutation := newSeckillOrderMutation(c.config, OpDelete)
+	return &SeckillOrderDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *SeckillOrderClient) DeleteOne(so *SeckillOrder) *SeckillOrderDeleteOne {
+	return c.DeleteOneID(so.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *SeckillOrderClient) DeleteOneID(id int64) *SeckillOrderDeleteOne {
+	builder := c.Delete().Where(seckillorder.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SeckillOrderDeleteOne{builder}
+}
+
+// Query returns a query builder for SeckillOrder.
+func (c *SeckillOrderClient) Query() *SeckillOrderQuery {
+	return &SeckillOrderQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a SeckillOrder entity by its id.
+func (c *SeckillOrderClient) Get(ctx context.Context, id int64) (*SeckillOrder, error) {
+	return c.Query().Where(seckillorder.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SeckillOrderClient) GetX(ctx context.Context, id int64) *SeckillOrder {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *SeckillOrderClient) Hooks() []Hook {
+	return c.hooks.SeckillOrder
 }

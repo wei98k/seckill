@@ -37,6 +37,28 @@
           "Order"
         ]
       }
+    },
+    "/seckill/order": {
+      "post": {
+        "operationId": "Order_CreateSeckillOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateSeckillOrderReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "Order"
+        ]
+      }
     }
   },
   "definitions": {
@@ -71,6 +93,9 @@
       }
     },
     "v1CreateOrderReply": {
+      "type": "object"
+    },
+    "v1CreateSeckillOrderReply": {
       "type": "object"
     },
     "v1DeleteOrderReply": {

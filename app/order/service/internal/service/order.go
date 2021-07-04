@@ -73,3 +73,24 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderReque
 
 	return &pb.CreateOrderReply{},nil
 }
+
+func (s *OrderService) CreateSeckillOrder(ctx context.Context, req *pb.CreateSeckillOrderRequest) (*pb.CreateSeckillOrderReply, error) {
+	// 1. 检查用户是否合法
+	// 2. 检查库存状态
+	s.log.Info("seckill-order-service: param ", req)
+
+	//redis-key设计  SECKILL:GOODS:ID:23   vlaue: 10
+
+
+	param := &biz.SeckillOrder{
+		UserId: 1,
+		GoodsId: 99,
+		OrderId: 88,
+	}
+
+	err := s.so.CreateSeckillOrder(ctx, param)
+
+	s.log.Info("seckill-order-service: err ", err)
+
+	return &pb.CreateSeckillOrderReply{},nil
+}

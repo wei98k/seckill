@@ -17,6 +17,16 @@ func (s *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 	return &pb.CreateUserReply{}, nil
 }
 func (s *UserService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserReply, error) {
+	u := &biz.UpdateUser{
+		PasswordHash: req.Password,
+	}
+
+	err := s.uc.Update(ctx, req.Id, u)
+
+	if err != nil {
+		// 返回错误信息
+		return nil, err
+	}
 	return &pb.UpdateUserReply{}, nil
 }
 func (s *UserService) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserReply, error) {

@@ -5,6 +5,8 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/nacos/registry"
+	"github.com/go-redis/redis/extra/redisotel"
+	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
 	"github.com/helloMJW/seckill/app/order/service/internal/conf"
@@ -13,7 +15,7 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewOrderRepo)
+var ProviderSet = wire.NewSet(NewData, NewOrderRepo, NewSeckillOrderRepo)
 
 // Data .
 type Data struct {
@@ -22,6 +24,8 @@ type Data struct {
 
 	// Gconn *grpc.ClientConn
 	userRpc *ggrpc.ClientConn
+
+	rdb *redis.Client
 }
 
 // NewData .
@@ -43,6 +47,18 @@ func NewData(conf *conf.Data, logger log.Logger, rr *registry.Registry) (*Data, 
 		return nil, nil, err
 	}
 
+	//redis
+	// redis
+	rdb := redis.NewClient(&redis.Options{
+		Addr:         conf.Redis.Addr,
+		Password:     conf.Redis.Password,
+		DB:           int(conf.Redis.Db),
+		WriteTimeout: conf.Redis.WriteTimeout.AsDuration(),
+		ReadTimeout:  conf.Redis.ReadTimeout.AsDuration(),
+	})
+	rdb.AddHook(redisotel.TracingHook{})
+
+	//gRpc
 	userRpc, err := grpc.DialInsecure(
 		context.Background(),
 		grpc.WithEndpoint("discovery:///user.grpc"),
@@ -56,6 +72,7 @@ func NewData(conf *conf.Data, logger log.Logger, rr *registry.Registry) (*Data, 
 	d := &Data{
 		db: client,
 		userRpc: userRpc,
+		rdb: rdb,
 	}
 	return d, func() {
 		if err := d.db.Close(); err != nil {

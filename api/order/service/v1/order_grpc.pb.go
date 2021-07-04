@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OrderClient interface {
 	CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*CreateOrderReply, error)
+	CreateSeckillOrder(ctx context.Context, in *CreateSeckillOrderRequest, opts ...grpc.CallOption) (*CreateSeckillOrderReply, error)
 	UpdateOrder(ctx context.Context, in *UpdateOrderRequest, opts ...grpc.CallOption) (*UpdateOrderReply, error)
 	DeleteOrder(ctx context.Context, in *DeleteOrderRequest, opts ...grpc.CallOption) (*DeleteOrderReply, error)
 	GetOrder(ctx context.Context, in *GetOrderRequest, opts ...grpc.CallOption) (*GetOrderReply, error)
@@ -36,6 +37,15 @@ func NewOrderClient(cc grpc.ClientConnInterface) OrderClient {
 func (c *orderClient) CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*CreateOrderReply, error) {
 	out := new(CreateOrderReply)
 	err := c.cc.Invoke(ctx, "/api.order.service.v1.Order/CreateOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderClient) CreateSeckillOrder(ctx context.Context, in *CreateSeckillOrderRequest, opts ...grpc.CallOption) (*CreateSeckillOrderReply, error) {
+	out := new(CreateSeckillOrderReply)
+	err := c.cc.Invoke(ctx, "/api.order.service.v1.Order/CreateSeckillOrder", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -83,6 +93,7 @@ func (c *orderClient) ListOrder(ctx context.Context, in *ListOrderRequest, opts 
 // for forward compatibility
 type OrderServer interface {
 	CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderReply, error)
+	CreateSeckillOrder(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error)
 	UpdateOrder(context.Context, *UpdateOrderRequest) (*UpdateOrderReply, error)
 	DeleteOrder(context.Context, *DeleteOrderRequest) (*DeleteOrderReply, error)
 	GetOrder(context.Context, *GetOrderRequest) (*GetOrderReply, error)
@@ -96,6 +107,9 @@ type UnimplementedOrderServer struct {
 
 func (UnimplementedOrderServer) CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrder not implemented")
+}
+func (UnimplementedOrderServer) CreateSeckillOrder(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSeckillOrder not implemented")
 }
 func (UnimplementedOrderServer) UpdateOrder(context.Context, *UpdateOrderRequest) (*UpdateOrderReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrder not implemented")
@@ -136,6 +150,24 @@ func _Order_CreateOrder_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OrderServer).CreateOrder(ctx, req.(*CreateOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Order_CreateSeckillOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSeckillOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServer).CreateSeckillOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.order.service.v1.Order/CreateSeckillOrder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServer).CreateSeckillOrder(ctx, req.(*CreateSeckillOrderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -222,6 +254,10 @@ var Order_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateOrder",
 			Handler:    _Order_CreateOrder_Handler,
+		},
+		{
+			MethodName: "CreateSeckillOrder",
+			Handler:    _Order_CreateSeckillOrder_Handler,
 		},
 		{
 			MethodName: "UpdateOrder",

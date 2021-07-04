@@ -14,6 +14,10 @@ type Tx struct {
 	config
 	// Order is the client for interacting with the Order builders.
 	Order *OrderClient
+	// SeckillGoods is the client for interacting with the SeckillGoods builders.
+	SeckillGoods *SeckillGoodsClient
+	// SeckillOrder is the client for interacting with the SeckillOrder builders.
+	SeckillOrder *SeckillOrderClient
 
 	// lazily loaded.
 	client     *Client
@@ -150,6 +154,8 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Order = NewOrderClient(tx.config)
+	tx.SeckillGoods = NewSeckillGoodsClient(tx.config)
+	tx.SeckillOrder = NewSeckillOrderClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

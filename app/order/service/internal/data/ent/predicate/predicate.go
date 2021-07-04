@@ -8,3 +8,9 @@ import (
 
 // Order is the predicate function for order builders.
 type Order func(*sql.Selector)
+
+// SeckillGoods is the predicate function for seckillgoods builders.
+type SeckillGoods func(*sql.Selector)
+
+// SeckillOrder is the predicate function for seckillorder builders.
+type SeckillOrder func(*sql.Selector)

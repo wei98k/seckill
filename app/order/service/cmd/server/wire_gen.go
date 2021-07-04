@@ -26,7 +26,9 @@ func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	}
 	orderRepo := data.NewOrderRepo(dataData, logger)
 	orderUsecase := biz.NewOrderUsecase(orderRepo, logger)
-	orderService := service.NewOrderService(orderUsecase, logger)
+	seckillOrderRepo := data.NewSeckillOrderRepo(dataData, logger)
+	seckillOrderUsecase := biz.NewSeckillOrderUsecase(seckillOrderRepo, logger)
+	orderService := service.NewOrderService(orderUsecase, seckillOrderUsecase, logger)
 	httpServer := server.NewHTTPServer(confServer, orderService, logger)
 	grpcServer := server.NewGRPCServer(confServer, orderService, logger)
 	app := newApp(logger, httpServer, grpcServer, registry)

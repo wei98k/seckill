@@ -24,9 +24,41 @@ var (
 		PrimaryKey:  []*schema.Column{OrdersColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
 	}
+	// SeckillGoodsColumns holds the columns for the "seckill_goods" table.
+	SeckillGoodsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "goods_id", Type: field.TypeInt64},
+		{Name: "seckill_price", Type: field.TypeFloat64, SchemaType: map[string]string{"mysql": "decimal(10,2)"}},
+		{Name: "stock_count", Type: field.TypeInt64},
+		{Name: "start_date", Type: field.TypeTime},
+		{Name: "end_date", Type: field.TypeTime},
+	}
+	// SeckillGoodsTable holds the schema information for the "seckill_goods" table.
+	SeckillGoodsTable = &schema.Table{
+		Name:        "seckill_goods",
+		Columns:     SeckillGoodsColumns,
+		PrimaryKey:  []*schema.Column{SeckillGoodsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
+	// SeckillOrdersColumns holds the columns for the "seckill_orders" table.
+	SeckillOrdersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "user_id", Type: field.TypeInt64},
+		{Name: "order_id", Type: field.TypeInt64},
+		{Name: "goods_id", Type: field.TypeInt64},
+	}
+	// SeckillOrdersTable holds the schema information for the "seckill_orders" table.
+	SeckillOrdersTable = &schema.Table{
+		Name:        "seckill_orders",
+		Columns:     SeckillOrdersColumns,
+		PrimaryKey:  []*schema.Column{SeckillOrdersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		OrdersTable,
+		SeckillGoodsTable,
+		SeckillOrdersTable,
 	}
 )
 

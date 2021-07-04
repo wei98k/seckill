@@ -10,6 +10,8 @@ import (
 
 	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/order"
 	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/predicate"
+	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/seckillgoods"
+	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/seckillorder"
 
 	"entgo.io/ent"
 )
@@ -23,7 +25,9 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeOrder = "Order"
+	TypeOrder        = "Order"
+	TypeSeckillGoods = "SeckillGoods"
+	TypeSeckillOrder = "SeckillOrder"
 )
 
 // OrderMutation represents an operation that mutates the Order nodes in the graph.
@@ -602,4 +606,1118 @@ func (m *OrderMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *OrderMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Order edge %s", name)
+}
+
+// SeckillGoodsMutation represents an operation that mutates the SeckillGoods nodes in the graph.
+type SeckillGoodsMutation struct {
+	config
+	op               Op
+	typ              string
+	id               *int64
+	goods_id         *int64
+	addgoods_id      *int64
+	seckill_price    *float64
+	addseckill_price *float64
+	stock_count      *int64
+	addstock_count   *int64
+	start_date       *time.Time
+	end_date         *time.Time
+	clearedFields    map[string]struct{}
+	done             bool
+	oldValue         func(context.Context) (*SeckillGoods, error)
+	predicates       []predicate.SeckillGoods
+}
+
+var _ ent.Mutation = (*SeckillGoodsMutation)(nil)
+
+// seckillgoodsOption allows management of the mutation configuration using functional options.
+type seckillgoodsOption func(*SeckillGoodsMutation)
+
+// newSeckillGoodsMutation creates new mutation for the SeckillGoods entity.
+func newSeckillGoodsMutation(c config, op Op, opts ...seckillgoodsOption) *SeckillGoodsMutation {
+	m := &SeckillGoodsMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeSeckillGoods,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withSeckillGoodsID sets the ID field of the mutation.
+func withSeckillGoodsID(id int64) seckillgoodsOption {
+	return func(m *SeckillGoodsMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *SeckillGoods
+		)
+		m.oldValue = func(ctx context.Context) (*SeckillGoods, error) {
+			once.Do(func() {
+				if m.done {
+					err = fmt.Errorf("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().SeckillGoods.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withSeckillGoods sets the old SeckillGoods of the mutation.
+func withSeckillGoods(node *SeckillGoods) seckillgoodsOption {
+	return func(m *SeckillGoodsMutation) {
+		m.oldValue = func(context.Context) (*SeckillGoods, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m SeckillGoodsMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m SeckillGoodsMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of SeckillGoods entities.
+func (m *SeckillGoodsMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID
+// is only available if it was provided to the builder.
+func (m *SeckillGoodsMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// SetGoodsID sets the "goods_id" field.
+func (m *SeckillGoodsMutation) SetGoodsID(i int64) {
+	m.goods_id = &i
+	m.addgoods_id = nil
+}
+
+// GoodsID returns the value of the "goods_id" field in the mutation.
+func (m *SeckillGoodsMutation) GoodsID() (r int64, exists bool) {
+	v := m.goods_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGoodsID returns the old "goods_id" field's value of the SeckillGoods entity.
+// If the SeckillGoods object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SeckillGoodsMutation) OldGoodsID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldGoodsID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldGoodsID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGoodsID: %w", err)
+	}
+	return oldValue.GoodsID, nil
+}
+
+// AddGoodsID adds i to the "goods_id" field.
+func (m *SeckillGoodsMutation) AddGoodsID(i int64) {
+	if m.addgoods_id != nil {
+		*m.addgoods_id += i
+	} else {
+		m.addgoods_id = &i
+	}
+}
+
+// AddedGoodsID returns the value that was added to the "goods_id" field in this mutation.
+func (m *SeckillGoodsMutation) AddedGoodsID() (r int64, exists bool) {
+	v := m.addgoods_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetGoodsID resets all changes to the "goods_id" field.
+func (m *SeckillGoodsMutation) ResetGoodsID() {
+	m.goods_id = nil
+	m.addgoods_id = nil
+}
+
+// SetSeckillPrice sets the "seckill_price" field.
+func (m *SeckillGoodsMutation) SetSeckillPrice(f float64) {
+	m.seckill_price = &f
+	m.addseckill_price = nil
+}
+
+// SeckillPrice returns the value of the "seckill_price" field in the mutation.
+func (m *SeckillGoodsMutation) SeckillPrice() (r float64, exists bool) {
+	v := m.seckill_price
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSeckillPrice returns the old "seckill_price" field's value of the SeckillGoods entity.
+// If the SeckillGoods object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SeckillGoodsMutation) OldSeckillPrice(ctx context.Context) (v float64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldSeckillPrice is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldSeckillPrice requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSeckillPrice: %w", err)
+	}
+	return oldValue.SeckillPrice, nil
+}
+
+// AddSeckillPrice adds f to the "seckill_price" field.
+func (m *SeckillGoodsMutation) AddSeckillPrice(f float64) {
+	if m.addseckill_price != nil {
+		*m.addseckill_price += f
+	} else {
+		m.addseckill_price = &f
+	}
+}
+
+// AddedSeckillPrice returns the value that was added to the "seckill_price" field in this mutation.
+func (m *SeckillGoodsMutation) AddedSeckillPrice() (r float64, exists bool) {
+	v := m.addseckill_price
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSeckillPrice resets all changes to the "seckill_price" field.
+func (m *SeckillGoodsMutation) ResetSeckillPrice() {
+	m.seckill_price = nil
+	m.addseckill_price = nil
+}
+
+// SetStockCount sets the "stock_count" field.
+func (m *SeckillGoodsMutation) SetStockCount(i int64) {
+	m.stock_count = &i
+	m.addstock_count = nil
+}
+
+// StockCount returns the value of the "stock_count" field in the mutation.
+func (m *SeckillGoodsMutation) StockCount() (r int64, exists bool) {
+	v := m.stock_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStockCount returns the old "stock_count" field's value of the SeckillGoods entity.
+// If the SeckillGoods object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SeckillGoodsMutation) OldStockCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldStockCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldStockCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStockCount: %w", err)
+	}
+	return oldValue.StockCount, nil
+}
+
+// AddStockCount adds i to the "stock_count" field.
+func (m *SeckillGoodsMutation) AddStockCount(i int64) {
+	if m.addstock_count != nil {
+		*m.addstock_count += i
+	} else {
+		m.addstock_count = &i
+	}
+}
+
+// AddedStockCount returns the value that was added to the "stock_count" field in this mutation.
+func (m *SeckillGoodsMutation) AddedStockCount() (r int64, exists bool) {
+	v := m.addstock_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetStockCount resets all changes to the "stock_count" field.
+func (m *SeckillGoodsMutation) ResetStockCount() {
+	m.stock_count = nil
+	m.addstock_count = nil
+}
+
+// SetStartDate sets the "start_date" field.
+func (m *SeckillGoodsMutation) SetStartDate(t time.Time) {
+	m.start_date = &t
+}
+
+// StartDate returns the value of the "start_date" field in the mutation.
+func (m *SeckillGoodsMutation) StartDate() (r time.Time, exists bool) {
+	v := m.start_date
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStartDate returns the old "start_date" field's value of the SeckillGoods entity.
+// If the SeckillGoods object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SeckillGoodsMutation) OldStartDate(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldStartDate is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldStartDate requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStartDate: %w", err)
+	}
+	return oldValue.StartDate, nil
+}
+
+// ResetStartDate resets all changes to the "start_date" field.
+func (m *SeckillGoodsMutation) ResetStartDate() {
+	m.start_date = nil
+}
+
+// SetEndDate sets the "end_date" field.
+func (m *SeckillGoodsMutation) SetEndDate(t time.Time) {
+	m.end_date = &t
+}
+
+// EndDate returns the value of the "end_date" field in the mutation.
+func (m *SeckillGoodsMutation) EndDate() (r time.Time, exists bool) {
+	v := m.end_date
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEndDate returns the old "end_date" field's value of the SeckillGoods entity.
+// If the SeckillGoods object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SeckillGoodsMutation) OldEndDate(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldEndDate is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldEndDate requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEndDate: %w", err)
+	}
+	return oldValue.EndDate, nil
+}
+
+// ResetEndDate resets all changes to the "end_date" field.
+func (m *SeckillGoodsMutation) ResetEndDate() {
+	m.end_date = nil
+}
+
+// Op returns the operation name.
+func (m *SeckillGoodsMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (SeckillGoods).
+func (m *SeckillGoodsMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *SeckillGoodsMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.goods_id != nil {
+		fields = append(fields, seckillgoods.FieldGoodsID)
+	}
+	if m.seckill_price != nil {
+		fields = append(fields, seckillgoods.FieldSeckillPrice)
+	}
+	if m.stock_count != nil {
+		fields = append(fields, seckillgoods.FieldStockCount)
+	}
+	if m.start_date != nil {
+		fields = append(fields, seckillgoods.FieldStartDate)
+	}
+	if m.end_date != nil {
+		fields = append(fields, seckillgoods.FieldEndDate)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *SeckillGoodsMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case seckillgoods.FieldGoodsID:
+		return m.GoodsID()
+	case seckillgoods.FieldSeckillPrice:
+		return m.SeckillPrice()
+	case seckillgoods.FieldStockCount:
+		return m.StockCount()
+	case seckillgoods.FieldStartDate:
+		return m.StartDate()
+	case seckillgoods.FieldEndDate:
+		return m.EndDate()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *SeckillGoodsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case seckillgoods.FieldGoodsID:
+		return m.OldGoodsID(ctx)
+	case seckillgoods.FieldSeckillPrice:
+		return m.OldSeckillPrice(ctx)
+	case seckillgoods.FieldStockCount:
+		return m.OldStockCount(ctx)
+	case seckillgoods.FieldStartDate:
+		return m.OldStartDate(ctx)
+	case seckillgoods.FieldEndDate:
+		return m.OldEndDate(ctx)
+	}
+	return nil, fmt.Errorf("unknown SeckillGoods field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SeckillGoodsMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case seckillgoods.FieldGoodsID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGoodsID(v)
+		return nil
+	case seckillgoods.FieldSeckillPrice:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSeckillPrice(v)
+		return nil
+	case seckillgoods.FieldStockCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStockCount(v)
+		return nil
+	case seckillgoods.FieldStartDate:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStartDate(v)
+		return nil
+	case seckillgoods.FieldEndDate:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEndDate(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SeckillGoods field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *SeckillGoodsMutation) AddedFields() []string {
+	var fields []string
+	if m.addgoods_id != nil {
+		fields = append(fields, seckillgoods.FieldGoodsID)
+	}
+	if m.addseckill_price != nil {
+		fields = append(fields, seckillgoods.FieldSeckillPrice)
+	}
+	if m.addstock_count != nil {
+		fields = append(fields, seckillgoods.FieldStockCount)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *SeckillGoodsMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case seckillgoods.FieldGoodsID:
+		return m.AddedGoodsID()
+	case seckillgoods.FieldSeckillPrice:
+		return m.AddedSeckillPrice()
+	case seckillgoods.FieldStockCount:
+		return m.AddedStockCount()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SeckillGoodsMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case seckillgoods.FieldGoodsID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddGoodsID(v)
+		return nil
+	case seckillgoods.FieldSeckillPrice:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSeckillPrice(v)
+		return nil
+	case seckillgoods.FieldStockCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddStockCount(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SeckillGoods numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *SeckillGoodsMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *SeckillGoodsMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *SeckillGoodsMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown SeckillGoods nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *SeckillGoodsMutation) ResetField(name string) error {
+	switch name {
+	case seckillgoods.FieldGoodsID:
+		m.ResetGoodsID()
+		return nil
+	case seckillgoods.FieldSeckillPrice:
+		m.ResetSeckillPrice()
+		return nil
+	case seckillgoods.FieldStockCount:
+		m.ResetStockCount()
+		return nil
+	case seckillgoods.FieldStartDate:
+		m.ResetStartDate()
+		return nil
+	case seckillgoods.FieldEndDate:
+		m.ResetEndDate()
+		return nil
+	}
+	return fmt.Errorf("unknown SeckillGoods field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *SeckillGoodsMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *SeckillGoodsMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *SeckillGoodsMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *SeckillGoodsMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *SeckillGoodsMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *SeckillGoodsMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *SeckillGoodsMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown SeckillGoods unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *SeckillGoodsMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown SeckillGoods edge %s", name)
+}
+
+// SeckillOrderMutation represents an operation that mutates the SeckillOrder nodes in the graph.
+type SeckillOrderMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int64
+	user_id       *int64
+	adduser_id    *int64
+	order_id      *int64
+	addorder_id   *int64
+	goods_id      *int64
+	addgoods_id   *int64
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*SeckillOrder, error)
+	predicates    []predicate.SeckillOrder
+}
+
+var _ ent.Mutation = (*SeckillOrderMutation)(nil)
+
+// seckillorderOption allows management of the mutation configuration using functional options.
+type seckillorderOption func(*SeckillOrderMutation)
+
+// newSeckillOrderMutation creates new mutation for the SeckillOrder entity.
+func newSeckillOrderMutation(c config, op Op, opts ...seckillorderOption) *SeckillOrderMutation {
+	m := &SeckillOrderMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeSeckillOrder,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withSeckillOrderID sets the ID field of the mutation.
+func withSeckillOrderID(id int64) seckillorderOption {
+	return func(m *SeckillOrderMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *SeckillOrder
+		)
+		m.oldValue = func(ctx context.Context) (*SeckillOrder, error) {
+			once.Do(func() {
+				if m.done {
+					err = fmt.Errorf("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().SeckillOrder.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withSeckillOrder sets the old SeckillOrder of the mutation.
+func withSeckillOrder(node *SeckillOrder) seckillorderOption {
+	return func(m *SeckillOrderMutation) {
+		m.oldValue = func(context.Context) (*SeckillOrder, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m SeckillOrderMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m SeckillOrderMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of SeckillOrder entities.
+func (m *SeckillOrderMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID
+// is only available if it was provided to the builder.
+func (m *SeckillOrderMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// SetUserID sets the "user_id" field.
+func (m *SeckillOrderMutation) SetUserID(i int64) {
+	m.user_id = &i
+	m.adduser_id = nil
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *SeckillOrderMutation) UserID() (r int64, exists bool) {
+	v := m.user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the SeckillOrder entity.
+// If the SeckillOrder object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SeckillOrderMutation) OldUserID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// AddUserID adds i to the "user_id" field.
+func (m *SeckillOrderMutation) AddUserID(i int64) {
+	if m.adduser_id != nil {
+		*m.adduser_id += i
+	} else {
+		m.adduser_id = &i
+	}
+}
+
+// AddedUserID returns the value that was added to the "user_id" field in this mutation.
+func (m *SeckillOrderMutation) AddedUserID() (r int64, exists bool) {
+	v := m.adduser_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *SeckillOrderMutation) ResetUserID() {
+	m.user_id = nil
+	m.adduser_id = nil
+}
+
+// SetOrderID sets the "order_id" field.
+func (m *SeckillOrderMutation) SetOrderID(i int64) {
+	m.order_id = &i
+	m.addorder_id = nil
+}
+
+// OrderID returns the value of the "order_id" field in the mutation.
+func (m *SeckillOrderMutation) OrderID() (r int64, exists bool) {
+	v := m.order_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrderID returns the old "order_id" field's value of the SeckillOrder entity.
+// If the SeckillOrder object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SeckillOrderMutation) OldOrderID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldOrderID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldOrderID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrderID: %w", err)
+	}
+	return oldValue.OrderID, nil
+}
+
+// AddOrderID adds i to the "order_id" field.
+func (m *SeckillOrderMutation) AddOrderID(i int64) {
+	if m.addorder_id != nil {
+		*m.addorder_id += i
+	} else {
+		m.addorder_id = &i
+	}
+}
+
+// AddedOrderID returns the value that was added to the "order_id" field in this mutation.
+func (m *SeckillOrderMutation) AddedOrderID() (r int64, exists bool) {
+	v := m.addorder_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetOrderID resets all changes to the "order_id" field.
+func (m *SeckillOrderMutation) ResetOrderID() {
+	m.order_id = nil
+	m.addorder_id = nil
+}
+
+// SetGoodsID sets the "goods_id" field.
+func (m *SeckillOrderMutation) SetGoodsID(i int64) {
+	m.goods_id = &i
+	m.addgoods_id = nil
+}
+
+// GoodsID returns the value of the "goods_id" field in the mutation.
+func (m *SeckillOrderMutation) GoodsID() (r int64, exists bool) {
+	v := m.goods_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGoodsID returns the old "goods_id" field's value of the SeckillOrder entity.
+// If the SeckillOrder object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SeckillOrderMutation) OldGoodsID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldGoodsID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldGoodsID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGoodsID: %w", err)
+	}
+	return oldValue.GoodsID, nil
+}
+
+// AddGoodsID adds i to the "goods_id" field.
+func (m *SeckillOrderMutation) AddGoodsID(i int64) {
+	if m.addgoods_id != nil {
+		*m.addgoods_id += i
+	} else {
+		m.addgoods_id = &i
+	}
+}
+
+// AddedGoodsID returns the value that was added to the "goods_id" field in this mutation.
+func (m *SeckillOrderMutation) AddedGoodsID() (r int64, exists bool) {
+	v := m.addgoods_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetGoodsID resets all changes to the "goods_id" field.
+func (m *SeckillOrderMutation) ResetGoodsID() {
+	m.goods_id = nil
+	m.addgoods_id = nil
+}
+
+// Op returns the operation name.
+func (m *SeckillOrderMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (SeckillOrder).
+func (m *SeckillOrderMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *SeckillOrderMutation) Fields() []string {
+	fields := make([]string, 0, 3)
+	if m.user_id != nil {
+		fields = append(fields, seckillorder.FieldUserID)
+	}
+	if m.order_id != nil {
+		fields = append(fields, seckillorder.FieldOrderID)
+	}
+	if m.goods_id != nil {
+		fields = append(fields, seckillorder.FieldGoodsID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *SeckillOrderMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case seckillorder.FieldUserID:
+		return m.UserID()
+	case seckillorder.FieldOrderID:
+		return m.OrderID()
+	case seckillorder.FieldGoodsID:
+		return m.GoodsID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *SeckillOrderMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case seckillorder.FieldUserID:
+		return m.OldUserID(ctx)
+	case seckillorder.FieldOrderID:
+		return m.OldOrderID(ctx)
+	case seckillorder.FieldGoodsID:
+		return m.OldGoodsID(ctx)
+	}
+	return nil, fmt.Errorf("unknown SeckillOrder field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SeckillOrderMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case seckillorder.FieldUserID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
+	case seckillorder.FieldOrderID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrderID(v)
+		return nil
+	case seckillorder.FieldGoodsID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGoodsID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SeckillOrder field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *SeckillOrderMutation) AddedFields() []string {
+	var fields []string
+	if m.adduser_id != nil {
+		fields = append(fields, seckillorder.FieldUserID)
+	}
+	if m.addorder_id != nil {
+		fields = append(fields, seckillorder.FieldOrderID)
+	}
+	if m.addgoods_id != nil {
+		fields = append(fields, seckillorder.FieldGoodsID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *SeckillOrderMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case seckillorder.FieldUserID:
+		return m.AddedUserID()
+	case seckillorder.FieldOrderID:
+		return m.AddedOrderID()
+	case seckillorder.FieldGoodsID:
+		return m.AddedGoodsID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SeckillOrderMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case seckillorder.FieldUserID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUserID(v)
+		return nil
+	case seckillorder.FieldOrderID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOrderID(v)
+		return nil
+	case seckillorder.FieldGoodsID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddGoodsID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SeckillOrder numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *SeckillOrderMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *SeckillOrderMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *SeckillOrderMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown SeckillOrder nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *SeckillOrderMutation) ResetField(name string) error {
+	switch name {
+	case seckillorder.FieldUserID:
+		m.ResetUserID()
+		return nil
+	case seckillorder.FieldOrderID:
+		m.ResetOrderID()
+		return nil
+	case seckillorder.FieldGoodsID:
+		m.ResetGoodsID()
+		return nil
+	}
+	return fmt.Errorf("unknown SeckillOrder field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *SeckillOrderMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *SeckillOrderMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *SeckillOrderMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *SeckillOrderMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *SeckillOrderMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *SeckillOrderMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *SeckillOrderMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown SeckillOrder unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *SeckillOrderMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown SeckillOrder edge %s", name)
 }

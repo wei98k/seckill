@@ -62,7 +62,7 @@ func NewUserHandler(srv UserHandler, opts ...http1.HandleOption) http.Handler {
 		}
 	}).Methods("POST")
 
-	r.HandleFunc("/api.user.service.v1.User/UpdateUser", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
 		var in UpdateUserRequest
 		if err := h.Decode(r, &in); err != nil {
 			h.Error(w, r, err)
@@ -84,7 +84,7 @@ func NewUserHandler(srv UserHandler, opts ...http1.HandleOption) http.Handler {
 		if err := h.Encode(w, r, reply); err != nil {
 			h.Error(w, r, err)
 		}
-	}).Methods("POST")
+	}).Methods("PUT")
 
 	r.HandleFunc("/api.user.service.v1.User/DeleteUser", func(w http.ResponseWriter, r *http.Request) {
 		var in DeleteUserRequest
@@ -223,10 +223,10 @@ func (c *UserHTTPClientImpl) ListUser(ctx context.Context, in *ListUserRequest, 
 }
 
 func (c *UserHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...http1.CallOption) (out *UpdateUserReply, err error) {
-	path := binding.EncodePath("POST", "/api.user.service.v1.User/UpdateUser", in)
+	path := binding.EncodePath("PUT", "/user", in)
 	out = &UpdateUserReply{}
 
-	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("POST"), http1.PathPattern("/api.user.service.v1.User/UpdateUser"))
+	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("PUT"), http1.PathPattern("/user"))
 
 	return
 }

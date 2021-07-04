@@ -22,6 +22,32 @@ func (f OrderFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error
 	return f(ctx, mv)
 }
 
+// The SeckillGoodsFunc type is an adapter to allow the use of ordinary
+// function as SeckillGoods mutator.
+type SeckillGoodsFunc func(context.Context, *ent.SeckillGoodsMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SeckillGoodsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.SeckillGoodsMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SeckillGoodsMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The SeckillOrderFunc type is an adapter to allow the use of ordinary
+// function as SeckillOrder mutator.
+type SeckillOrderFunc func(context.Context, *ent.SeckillOrderMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SeckillOrderFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.SeckillOrderMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SeckillOrderMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // Condition is a hook condition function.
 type Condition func(context.Context, ent.Mutation) bool
 

@@ -22,6 +22,8 @@ const _ = http1.SupportPackageIsVersion1
 type OrderHandler interface {
 	CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderReply, error)
 
+	CreateSeckillOrder(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error)
+
 	DeleteOrder(context.Context, *DeleteOrderRequest) (*DeleteOrderReply, error)
 
 	GetOrder(context.Context, *GetOrderRequest) (*GetOrderReply, error)
@@ -57,6 +59,30 @@ func NewOrderHandler(srv OrderHandler, opts ...http1.HandleOption) http.Handler 
 			return
 		}
 		reply := out.(*CreateOrderReply)
+		if err := h.Encode(w, r, reply); err != nil {
+			h.Error(w, r, err)
+		}
+	}).Methods("POST")
+
+	r.HandleFunc("/seckill/order", func(w http.ResponseWriter, r *http.Request) {
+		var in CreateSeckillOrderRequest
+		if err := h.Decode(r, &in); err != nil {
+			h.Error(w, r, err)
+			return
+		}
+
+		next := func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CreateSeckillOrder(ctx, req.(*CreateSeckillOrderRequest))
+		}
+		if h.Middleware != nil {
+			next = h.Middleware(next)
+		}
+		out, err := next(r.Context(), &in)
+		if err != nil {
+			h.Error(w, r, err)
+			return
+		}
+		reply := out.(*CreateSeckillOrderReply)
 		if err := h.Encode(w, r, reply); err != nil {
 			h.Error(w, r, err)
 		}
@@ -164,6 +190,8 @@ func NewOrderHandler(srv OrderHandler, opts ...http1.HandleOption) http.Handler 
 type OrderHTTPClient interface {
 	CreateOrder(ctx context.Context, req *CreateOrderRequest, opts ...http1.CallOption) (rsp *CreateOrderReply, err error)
 
+	CreateSeckillOrder(ctx context.Context, req *CreateSeckillOrderRequest, opts ...http1.CallOption) (rsp *CreateSeckillOrderReply, err error)
+
 	DeleteOrder(ctx context.Context, req *DeleteOrderRequest, opts ...http1.CallOption) (rsp *DeleteOrderReply, err error)
 
 	GetOrder(ctx context.Context, req *GetOrderRequest, opts ...http1.CallOption) (rsp *GetOrderReply, err error)
@@ -186,6 +214,15 @@ func (c *OrderHTTPClientImpl) CreateOrder(ctx context.Context, in *CreateOrderRe
 	out = &CreateOrderReply{}
 
 	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("POST"), http1.PathPattern("/order"))
+
+	return
+}
+
+func (c *OrderHTTPClientImpl) CreateSeckillOrder(ctx context.Context, in *CreateSeckillOrderRequest, opts ...http1.CallOption) (out *CreateSeckillOrderReply, err error) {
+	path := binding.EncodePath("POST", "/seckill/order", in)
+	out = &CreateSeckillOrderReply{}
+
+	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("POST"), http1.PathPattern("/seckill/order"))
 
 	return
 }
