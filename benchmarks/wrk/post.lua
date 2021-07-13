@@ -7,5 +7,5 @@ wrk = {
     path    = "/",
     headers = {},
     body    = nil,
-    thread  = <userdata>,
+    -- thread  = <userdata>,
 }
