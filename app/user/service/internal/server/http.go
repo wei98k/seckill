@@ -6,14 +6,24 @@ import (
 	"github.com/helloMJW/seckill/app/user/service/internal/service"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
+	"github.com/go-kratos/kratos/v2/middleware/metrics"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
+	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
 )
 
 // NewHTTPServer new a HTTP server.
 func NewHTTPServer(c *conf.Server, s *service.UserService, logger log.Logger) *http.Server {
-	var opts = []http.ServerOption{}
+	var opts = []http.ServerOption{
+		http.Middleware(
+			recovery.Recovery(),
+			tracing.Server(),
+			logging.Server(logger),
+			metrics.Server(),
+			validate.Validator(),
+		),
+	}
 	if c.Http.Network != "" {
 		opts = append(opts, http.Network(c.Http.Network))
 	}
@@ -24,11 +34,6 @@ func NewHTTPServer(c *conf.Server, s *service.UserService, logger log.Logger) *h
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	m := http.Middleware(
-		recovery.Recovery(),
-		tracing.Server(),
-		logging.Server(logger),
-	)
-	srv.HandlePrefix("/", pb.NewUserHandler(s, m))
+	pb.RegisterUserHTTPServer(srv, s)
 	return srv
 }
