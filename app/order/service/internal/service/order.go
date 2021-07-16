@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	pb "github.com/helloMJW/seckill/api/order/service/v1"
-	"github.com/helloMJW/seckill/app/order/service/internal/biz"
+	pb "github.com/peter-wow/seckill/api/order/service/v1"
+	"github.com/peter-wow/seckill/app/order/service/internal/biz"
 )
 
 func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*pb.CreateOrderReply, error) {
@@ -81,6 +81,7 @@ func (s *OrderService) CreateSeckillOrder(ctx context.Context, req *pb.CreateSec
 
 	//redis-key设计  SECKILL:GOODS:ID:23   vlaue: 10
 
+	s.sq.CreateQueue(ctx)
 
 	param := &biz.SeckillOrder{
 		UserId: 1,

@@ -3,9 +3,8 @@ package data
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/helloMJW/seckill/app/order/service/internal/biz"
-
-	pb "github.com/helloMJW/seckill/api/user/service/v1"
+	pb "github.com/peter-wow/seckill/api/user/service/v1"
+	"github.com/peter-wow/seckill/app/order/service/internal/biz"
 )
 
 var _ biz.OrderRepo = (*orderRepo)(nil)
@@ -23,6 +22,8 @@ func NewOrderRepo(data *Data, logger log.Logger) biz.OrderRepo {
 }
 
 func (o orderRepo) CreateOrder(ctx context.Context, order *biz.Order) error {
+
+
 
 	res, err := o.data.db.Order.Create().SetGid(order.Gid).SetSn("2222").SetUID(333).Save(ctx)
 

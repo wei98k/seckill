@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/helloMJW/seckill/app/user/service/internal/data/ent"
+	"github.com/peter-wow/seckill/app/user/service/internal/data/ent"
 )
 
 // The UserFunc type is an adapter to allow the use of ordinary

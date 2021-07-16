@@ -8,11 +8,12 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/helloMJW/seckill/app/order/service/internal/biz"
-	"github.com/helloMJW/seckill/app/order/service/internal/conf"
-	"github.com/helloMJW/seckill/app/order/service/internal/data"
-	"github.com/helloMJW/seckill/app/order/service/internal/server"
-	"github.com/helloMJW/seckill/app/order/service/internal/service"
+	"github.com/peter-wow/seckill/app/order/service/internal/biz"
+	"github.com/peter-wow/seckill/app/order/service/internal/conf"
+	"github.com/peter-wow/seckill/app/order/service/internal/data"
+	"github.com/peter-wow/seckill/app/order/service/internal/queue"
+	"github.com/peter-wow/seckill/app/order/service/internal/server"
+	"github.com/peter-wow/seckill/app/order/service/internal/service"
 )
 
 // Injectors from wire.go:
@@ -28,7 +29,10 @@ func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	orderUsecase := biz.NewOrderUsecase(orderRepo, logger)
 	seckillOrderRepo := data.NewSeckillOrderRepo(dataData, logger)
 	seckillOrderUsecase := biz.NewSeckillOrderUsecase(seckillOrderRepo, logger)
-	orderService := service.NewOrderService(orderUsecase, seckillOrderUsecase, logger)
+	queueQueue := queue.NewQueue()
+	orderQueueRepo := queue.NewOrderQueueRepo(queueQueue, logger)
+	orderQueueUsecase := biz.NewOrderQueueUsecase(orderQueueRepo, logger)
+	orderService := service.NewOrderService(orderUsecase, seckillOrderUsecase, orderQueueUsecase, logger)
 	httpServer := server.NewHTTPServer(confServer, orderService, logger)
 	grpcServer := server.NewGRPCServer(confServer, orderService, logger)
 	app := newApp(logger, httpServer, grpcServer, registry)

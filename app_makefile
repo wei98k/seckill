@@ -36,6 +36,15 @@ http:
            --go-http_out=paths=source_relative:. \
            $(API_PROTO_FILES)
 
+.PHONY: errors
+# generate errors code
+errors:
+	cd ../../../api/$(APP_RELATIVE_PATH) && protoc --proto_path=. \
+               --proto_path=../../../third_party \
+               --go_out=paths=source_relative:. \
+               --go-errors_out=paths=source_relative:. \
+               $(API_PROTO_FILES)
+
 .PHONY: swagger
 # generate swagger
 swagger:
@@ -88,7 +97,7 @@ wire:
 
 .PHONY: api
 # generate api proto
-api: grpc http swagger
+api: grpc http errors swagger
 
 .PHONY: all
 # generate all

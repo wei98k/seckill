@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/helloMJW/seckill/app/user/service/internal/data/ent/migrate"
+	"github.com/peter-wow/seckill/app/user/service/internal/data/ent/migrate"
 
-	"github.com/helloMJW/seckill/app/user/service/internal/data/ent/user"
+	"github.com/peter-wow/seckill/app/user/service/internal/data/ent/user"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"

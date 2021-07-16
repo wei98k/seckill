@@ -5,8 +5,8 @@ package ent
 import (
 	"time"
 
-	"github.com/helloMJW/seckill/app/user/service/internal/data/ent/schema"
-	"github.com/helloMJW/seckill/app/user/service/internal/data/ent/user"
+	"github.com/peter-wow/seckill/app/user/service/internal/data/ent/schema"
+	"github.com/peter-wow/seckill/app/user/service/internal/data/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime code

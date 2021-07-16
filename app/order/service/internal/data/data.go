@@ -9,8 +9,8 @@ import (
 	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
-	"github.com/helloMJW/seckill/app/order/service/internal/conf"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent"
+	"github.com/peter-wow/seckill/app/order/service/internal/conf"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent"
 	ggrpc "google.golang.org/grpc"
 )
 

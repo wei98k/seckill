@@ -9,8 +9,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/predicate"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/seckillgoods"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/predicate"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/seckillgoods"
 )
 
 // SeckillGoodsDelete is the builder for deleting a SeckillGoods entity.

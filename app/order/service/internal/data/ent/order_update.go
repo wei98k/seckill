@@ -10,8 +10,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/order"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/predicate"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/order"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/predicate"
 )
 
 // OrderUpdate is the builder for updating Order entities.

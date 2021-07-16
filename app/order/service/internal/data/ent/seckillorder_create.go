@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/seckillorder"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/seckillorder"
 )
 
 // SeckillOrderCreate is the builder for creating a SeckillOrder entity.

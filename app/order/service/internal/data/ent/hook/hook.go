@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent"
 )
 
 // The OrderFunc type is an adapter to allow the use of ordinary

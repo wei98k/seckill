@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/helloMJW/seckill/app/goods/service/internal/data/ent/goods"
+	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/goods"
 )
 
 // GoodsCreate is the builder for creating a Goods entity.

@@ -2,10 +2,10 @@ package data
 
 import (
 	"context"
-	"github.com/helloMJW/seckill/app/goods/service/internal/conf"
+	"github.com/peter-wow/seckill/app/goods/service/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
-	"github.com/helloMJW/seckill/app/goods/service/internal/data/ent"
+	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent"
 
 	_ "github.com/go-sql-driver/mysql"
 )

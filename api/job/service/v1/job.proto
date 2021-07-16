@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package api.job.service.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/peter-wow/seckill/api/job/service/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.job.service.v1";
+
+service Job {
+    rpc CreateJob (CreateJobRequest) returns (CreateJobReply);
+    rpc UpdateJob (UpdateJobRequest) returns (UpdateJobReply);
+    rpc DeleteJob (DeleteJobRequest) returns (DeleteJobReply);
+    rpc GetJob (GetJobRequest) returns (GetJobReply) {
+        option (google.api.http) = {
+            get: "/job/{id}",
+        };
+    }
+    rpc ListJob (ListJobRequest) returns (ListJobReply);
+
+    rpc SayHello (HelloRequest) returns (HelloReply)  {
+        option (google.api.http) = {
+            get: "/helloworld/{name}"
+        };
+    }
+}
+
+message CreateJobRequest {}
+message CreateJobReply {}
+
+message UpdateJobRequest {}
+message UpdateJobReply {}
+
+message DeleteJobRequest {}
+message DeleteJobReply {}
+
+message GetJobRequest {
+    int64 id = 1;
+}
+message GetJobReply {
+    int64 id = 1;
+    string title = 2;
+    string intro = 3;
+}
+
+message ListJobRequest {}
+message ListJobReply {}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}

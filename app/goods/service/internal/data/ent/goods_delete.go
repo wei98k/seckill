@@ -9,8 +9,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/helloMJW/seckill/app/goods/service/internal/data/ent/goods"
-	"github.com/helloMJW/seckill/app/goods/service/internal/data/ent/predicate"
+	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/goods"
+	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/predicate"
 )
 
 // GoodsDelete is the builder for deleting a Goods entity.

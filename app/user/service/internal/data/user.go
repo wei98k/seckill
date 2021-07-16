@@ -3,8 +3,8 @@ package data
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/helloMJW/seckill/app/user/service/internal/biz"
-	"github.com/helloMJW/seckill/pkg/utils/encryption"
+	"github.com/peter-wow/seckill/app/user/service/internal/biz"
+	"github.com/peter-wow/seckill/pkg/utils/encryption"
 )
 
 var _ biz.UserRepo = (*userRepo)(nil)

@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/helloMJW/seckill/app/user/service/internal/data/ent/predicate"
-	"github.com/helloMJW/seckill/app/user/service/internal/data/ent/user"
+	"github.com/peter-wow/seckill/app/user/service/internal/data/ent/predicate"
+	"github.com/peter-wow/seckill/app/user/service/internal/data/ent/user"
 )
 
 // UserQuery is the builder for querying User entities.

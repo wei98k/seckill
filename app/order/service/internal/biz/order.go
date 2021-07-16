@@ -27,3 +27,21 @@ func NewOrderUsecase(repo OrderRepo, logger log.Logger) *OrderUsecase {
 func (uc *OrderUsecase) Create(ctx context.Context, order *Order) error {
 	return uc.repo.CreateOrder(ctx, order)
 }
+
+type OrderQueueRepo interface {
+	CreateOrder(ctx context.Context) error
+}
+
+type OrderQueueUsecase struct {
+	repo OrderQueueRepo
+	log *log.Helper
+}
+
+func NewOrderQueueUsecase(repo OrderQueueRepo, logger log.Logger) *OrderQueueUsecase {
+	return &OrderQueueUsecase{repo: repo, log: log.NewHelper(logger)}
+}
+
+func (uc *OrderQueueUsecase) CreateQueue(ctx context.Context) error {
+	uc.log.Info("queue test")
+	return uc.repo.CreateOrder(ctx)
+}

@@ -10,9 +10,9 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/order"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/seckillgoods"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/seckillorder"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/order"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/seckillgoods"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/seckillorder"
 )
 
 // ent aliases to avoid import conflicts in user's code.

@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/helloMJW/seckill/app/order/service/internal/biz"
+	"github.com/peter-wow/seckill/app/order/service/internal/biz"
 )
 
 var _ biz.SeckillOrderRepo = (*seckillOrderRepo)(nil)

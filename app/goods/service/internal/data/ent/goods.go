@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/helloMJW/seckill/app/goods/service/internal/data/ent/goods"
+	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/goods"
 )
 
 // Goods is the model entity for the Goods schema.

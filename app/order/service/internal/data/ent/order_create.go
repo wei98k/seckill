@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/order"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/order"
 )
 
 // OrderCreate is the builder for creating a Order entity.

@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/helloMJW/seckill/app/goods/service/internal/data/ent"
+	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent"
 )
 
 // The GoodsFunc type is an adapter to allow the use of ordinary

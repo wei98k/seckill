@@ -5,11 +5,11 @@
 package main
 
 import (
-	"github.com/helloMJW/seckill/app/goods/service/internal/biz"
-	"github.com/helloMJW/seckill/app/goods/service/internal/conf"
-	"github.com/helloMJW/seckill/app/goods/service/internal/data"
-	"github.com/helloMJW/seckill/app/goods/service/internal/server"
-	"github.com/helloMJW/seckill/app/goods/service/internal/service"
+	"github.com/peter-wow/seckill/app/goods/service/internal/biz"
+	"github.com/peter-wow/seckill/app/goods/service/internal/conf"
+	"github.com/peter-wow/seckill/app/goods/service/internal/data"
+	"github.com/peter-wow/seckill/app/goods/service/internal/server"
+	"github.com/peter-wow/seckill/app/goods/service/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"

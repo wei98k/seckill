@@ -4,7 +4,7 @@ package seckillorder
 
 import (
 	"entgo.io/ent/dialect/sql"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/predicate"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

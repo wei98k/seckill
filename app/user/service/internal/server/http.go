@@ -1,9 +1,9 @@
 package server
 
 import (
-	pb "github.com/helloMJW/seckill/api/user/service/v1"
-	"github.com/helloMJW/seckill/app/user/service/internal/conf"
-	"github.com/helloMJW/seckill/app/user/service/internal/service"
+	pb "github.com/peter-wow/seckill/api/user/service/v1"
+	"github.com/peter-wow/seckill/app/user/service/internal/conf"
+	"github.com/peter-wow/seckill/app/user/service/internal/service"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/metrics"

@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/migrate"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/migrate"
 
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/order"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/seckillgoods"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/seckillorder"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/order"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/seckillgoods"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/seckillorder"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"

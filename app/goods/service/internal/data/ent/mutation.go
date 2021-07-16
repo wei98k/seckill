@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/helloMJW/seckill/app/goods/service/internal/data/ent/goods"
-	"github.com/helloMJW/seckill/app/goods/service/internal/data/ent/predicate"
+	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/goods"
+	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/predicate"
 
 	"entgo.io/ent"
 )

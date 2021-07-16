@@ -4,7 +4,7 @@ import (
 	"flag"
 	"os"
 
-	"github.com/helloMJW/seckill/app/goods/service/internal/conf"
+	"github.com/peter-wow/seckill/app/goods/service/internal/conf"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"

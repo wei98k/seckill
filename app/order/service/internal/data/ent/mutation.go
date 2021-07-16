@@ -8,10 +8,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/order"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/predicate"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/seckillgoods"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/seckillorder"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/order"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/predicate"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/seckillgoods"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/seckillorder"
 
 	"entgo.io/ent"
 )

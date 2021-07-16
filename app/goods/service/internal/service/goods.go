@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	pb "github.com/helloMJW/seckill/api/goods/service/v1"
+	pb "github.com/peter-wow/seckill/api/goods/service/v1"
 )
 
 func (s *GoodsService) GetGoods(ctx context.Context, req *pb.GetGoodsRequest) (*pb.GetGoodsReply, error) {

@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/helloMJW/seckill/app/order/service/internal/data/ent/seckillorder"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/ent/seckillorder"
 )
 
 // SeckillOrder is the model entity for the SeckillOrder schema.

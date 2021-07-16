@@ -4,10 +4,10 @@ import (
 	"context"
 	"github.com/go-redis/redis/v8"
 	"github.com/go-redis/redis/extra/redisotel"
-	"github.com/helloMJW/seckill/app/user/service/internal/conf"
+	"github.com/peter-wow/seckill/app/user/service/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
-	"github.com/helloMJW/seckill/app/user/service/internal/data/ent"
+	"github.com/peter-wow/seckill/app/user/service/internal/data/ent"
 
 	_ "github.com/go-sql-driver/mysql"
 )
