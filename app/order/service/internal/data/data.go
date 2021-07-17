@@ -15,7 +15,7 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewOrderRepo, NewSeckillOrderRepo)
+var ProviderSet = wire.NewSet(NewData, NewOrderRepo, NewSeckillOrderRepo, NewSeckillGoodsRepo)
 
 // Data .
 type Data struct {
@@ -47,7 +47,6 @@ func NewData(conf *conf.Data, logger log.Logger, rr *registry.Registry) (*Data, 
 		return nil, nil, err
 	}
 
-	//redis
 	// redis
 	rdb := redis.NewClient(&redis.Options{
 		Addr:         conf.Redis.Addr,

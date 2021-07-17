@@ -3,7 +3,6 @@ package data
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
-	pb "github.com/peter-wow/seckill/api/user/service/v1"
 	"github.com/peter-wow/seckill/app/order/service/internal/biz"
 )
 
@@ -23,19 +22,17 @@ func NewOrderRepo(data *Data, logger log.Logger) biz.OrderRepo {
 
 func (o orderRepo) CreateOrder(ctx context.Context, order *biz.Order) error {
 
-
-
 	res, err := o.data.db.Order.Create().SetGid(order.Gid).SetSn("2222").SetUID(333).Save(ctx)
 
 	if err != nil {
 		return err
 	}
 
-	ucc := pb.NewUserClient(o.data.userRpc)
+	//ucc := pb.NewUserClient(o.data.userRpc)
+	//
+	//res1, err := ucc.GetUser(ctx, &pb.GetUserRequest{Id: 1})
 
-	res1, err := ucc.GetUser(ctx, &pb.GetUserRequest{Id: 1})
-
-	o.log.Infof("nacos-client-api: ", res1, err)
+	//o.log.Infof("nacos-client-api: ", res1, err)
 
 	o.log.Infof("order-create-result: %v", res)
 	return nil

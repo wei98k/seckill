@@ -16,7 +16,7 @@ var ProviderSet = wire.NewSet(NewHTTPServer, NewGRPCServer, NewRegistrar)
 func NewRegistrar() *registry.Registry {
 
 	sc := []constant.ServerConfig{
-		*constant.NewServerConfig("192.168.2.174", 8848),
+		*constant.NewServerConfig("192.168.2.27", 8848),
 	}
 
 	cc := &constant.ClientConfig{

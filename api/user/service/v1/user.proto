@@ -12,13 +12,15 @@ service User {
 
     rpc CreateUser (CreateUserRequest) returns (CreateUserReply) {
         option (google.api.http) = {
-            post: "/user",
+            post: "/user"
+            body: "*"
         };
     }
 
     rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply) {
         option (google.api.http) = {
-            put: "/user",
+            put: "/user"
+            body: "*"
         };
     }
     rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply);

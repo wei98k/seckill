@@ -33,6 +33,16 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateOrderRequest"
+            }
+          }
+        ],
         "tags": [
           "Order"
         ]
@@ -55,6 +65,16 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateSeckillOrderRequest"
+            }
+          }
+        ],
         "tags": [
           "Order"
         ]
@@ -95,8 +115,34 @@
     "v1CreateOrderReply": {
       "type": "object"
     },
+    "v1CreateOrderRequest": {
+      "type": "object",
+      "properties": {
+        "gid": {
+          "type": "string",
+          "format": "int64"
+        },
+        "amount": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
     "v1CreateSeckillOrderReply": {
       "type": "object"
+    },
+    "v1CreateSeckillOrderRequest": {
+      "type": "object",
+      "properties": {
+        "gid": {
+          "type": "string",
+          "format": "int64"
+        },
+        "amount": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
     },
     "v1DeleteOrderReply": {
       "type": "object"

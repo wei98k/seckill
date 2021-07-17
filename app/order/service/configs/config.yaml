@@ -8,8 +8,8 @@ server:
 data:
   database:
     driver: mysql
-    source: root:root@tcp(127.0.0.1:3307)/order?parseTime=true
+    source: root:Root@123456@tcp(192.168.2.27:3307)/order?parseTime=true
   redis:
-    addr: 127.0.0.1:6379
+    addr: 192.168.2.27:6379
     read_timeout: 0.2s
     write_timeout: 0.2s

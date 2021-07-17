@@ -16,16 +16,18 @@ type OrderService struct {
 	pb.UnimplementedOrderServer
 
 	uc *biz.OrderUsecase
+	goods *biz.SeckillGoodsUsecase
 	so *biz.SeckillOrderUsecase
 	sq *biz.OrderQueueUsecase
 	log *log.Helper
 }
 
-func NewOrderService(uc *biz.OrderUsecase, so *biz.SeckillOrderUsecase, sq *biz.OrderQueueUsecase, logger log.Logger) *OrderService  {
+func NewOrderService(uc *biz.OrderUsecase, so *biz.SeckillOrderUsecase, sq *biz.OrderQueueUsecase, goods *biz.SeckillGoodsUsecase, logger log.Logger) *OrderService  {
 	return &OrderService{
 		uc: uc,
 		so: so,
 		sq: sq,
+		goods: goods,
 		log: log.NewHelper(logger),
 	}
 }

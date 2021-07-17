@@ -11,7 +11,7 @@ Accept: application/json
 POST http://127.0.0.1:8000/user
 Content-Type: application/json
 
-{"username": "dddddss123", "password": "123123a"}
+{"username": "dddddddss123", "password": "123123a"}
 
 <> 2021-06-25T145006.200.json
 <> 2021-06-25T144859.500.json

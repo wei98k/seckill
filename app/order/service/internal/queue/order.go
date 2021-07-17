@@ -2,6 +2,8 @@ package queue
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/peter-wow/seckill/app/order/service/internal/biz"
@@ -16,19 +18,29 @@ type orderQueueRepo struct {
 
 func (o orderQueueRepo) CreateOrder(ctx context.Context) error {
 	// Trap SIGINT to trigger a graceful shutdown.
+	// o.queue.producer.Input()
 
-	o.log.Info("queue info")
+	o.log.Info("queue info, %d", o.queue.producer)
 
-	message := &sarama.ProducerMessage{Topic: "test", Value: sarama.StringEncoder("testing 123")}
+	topic := "test"
+	value := "are you ok"
 
-	o.queue.producer.Input() <- message
+	data, err := json.Marshal(value)
+	if err != nil {
+		fmt.Printf("[kafka_producer][sendMessage]:%s", err.Error())
+		//g.Log.Error("[kafka_producer][sendMessage]:%s", err.Error())
+		return nil
+	}
 
+	msg := &sarama.ProducerMessage{
+		Topic: topic,
+		Value: sarama.ByteEncoder(data),
+	}
 
+	o.queue.producer.Input() <- msg
 
-	o.log.Infof("Successfully produced: %d; ", message)
 
 	return nil
-	panic("implement me")
 }
 
 func NewOrderQueueRepo(queue *Queue, logger log.Logger) biz.OrderQueueRepo {
@@ -37,3 +49,19 @@ func NewOrderQueueRepo(queue *Queue, logger log.Logger) biz.OrderQueueRepo {
 		log:  log.NewHelper(log.With(logger, "module", "queue/server-service")),
 	}
 }
+
+//func (o orderQueueRepo) pusherMessage(topic string, value interface{}) {
+//	data, err := json.Marshal(value)
+//	if err != nil {
+//		fmt.Printf("[kafka_producer][sendMessage]:%s", err.Error())
+//		//g.Log.Error("[kafka_producer][sendMessage]:%s", err.Error())
+//		return
+//	}
+//
+//	msg := &sarama.ProducerMessage{
+//		Topic: topic,
+//		Value: sarama.ByteEncoder(data),
+//	}
+//
+//	o.queue.producer.Input() <- msg
+//}

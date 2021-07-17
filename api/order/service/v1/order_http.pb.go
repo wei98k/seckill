@@ -31,7 +31,7 @@ func RegisterOrderHTTPServer(s *http.Server, srv OrderHTTPServer) {
 func _Order_CreateOrder0_HTTP_Handler(srv OrderHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in CreateOrderRequest
-		if err := ctx.BindQuery(&in); err != nil {
+		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, "/api.order.service.v1.Order/CreateOrder")
@@ -50,7 +50,7 @@ func _Order_CreateOrder0_HTTP_Handler(srv OrderHTTPServer) func(ctx http.Context
 func _Order_CreateSeckillOrder0_HTTP_Handler(srv OrderHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in CreateSeckillOrderRequest
-		if err := ctx.BindQuery(&in); err != nil {
+		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, "/api.order.service.v1.Order/CreateSeckillOrder")
@@ -82,10 +82,10 @@ func NewOrderHTTPClient(client *http.Client) OrderHTTPClient {
 func (c *OrderHTTPClientImpl) CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...http.CallOption) (*CreateOrderReply, error) {
 	var out CreateOrderReply
 	pattern := "/order"
-	path := binding.EncodeURL(pattern, in, true)
+	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation("/api.order.service.v1.Order/CreateOrder"))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, nil, &out, opts...)
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -95,10 +95,10 @@ func (c *OrderHTTPClientImpl) CreateOrder(ctx context.Context, in *CreateOrderRe
 func (c *OrderHTTPClientImpl) CreateSeckillOrder(ctx context.Context, in *CreateSeckillOrderRequest, opts ...http.CallOption) (*CreateSeckillOrderReply, error) {
 	var out CreateSeckillOrderReply
 	pattern := "/seckill/order"
-	path := binding.EncodeURL(pattern, in, true)
+	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation("/api.order.service.v1.Order/CreateSeckillOrder"))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, nil, &out, opts...)
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
