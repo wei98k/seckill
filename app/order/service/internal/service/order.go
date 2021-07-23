@@ -34,6 +34,13 @@ func (s *OrderService) CreateSeckillOrder(ctx context.Context, req *pb.CreateSec
 	//验证秒杀活动
 	goods, err1 := s.goods.GetSeckillGoods(ctx, req.Gid)
 
+	//TODO::判断活动是否开始
+	s.goods.DecrGoodsStock(ctx, req.Gid)
+	//TODO::判断活动是否结束
+
+	//TODO::判断库存是否充足
+
+
 	if err1 != nil {
 		s.log.Errorf("get goods error %v", err1)
 		return nil, err1

@@ -49,19 +49,3 @@ func NewOrderQueueRepo(queue *Queue, logger log.Logger) biz.OrderQueueRepo {
 		log:  log.NewHelper(log.With(logger, "module", "queue/server-service")),
 	}
 }
-
-//func (o orderQueueRepo) pusherMessage(topic string, value interface{}) {
-//	data, err := json.Marshal(value)
-//	if err != nil {
-//		fmt.Printf("[kafka_producer][sendMessage]:%s", err.Error())
-//		//g.Log.Error("[kafka_producer][sendMessage]:%s", err.Error())
-//		return
-//	}
-//
-//	msg := &sarama.ProducerMessage{
-//		Topic: topic,
-//		Value: sarama.ByteEncoder(data),
-//	}
-//
-//	o.queue.producer.Input() <- msg
-//}

@@ -25,18 +25,21 @@ func (s seckillGoodsRepo) GetGoods(ctx context.Context, id int64) (*biz.SeckillG
 		return nil, err
 	}
 
-	//TODO::判断活动是否开始
-
-	//TODO::判断活动是否结束
-
-	//TODO::判断库存是否充足
-
 	return &biz.SeckillGoods{
 		GoodsId: g.GoodsID,
 		SeckillPrice: g.SeckillPrice,
 		StockCount: g.StockCount,
 	}, nil
 
+}
+
+func (s seckillGoodsRepo) DecrGoodsStock(ctx context.Context, id int64) error {
+	//s.data.db.SeckillGoods.UpdateOneID(id).SetStockCount()
+	s.data.db.SeckillGoods.UpdateOneID(id).AddStockCount(-1).Save(ctx)
+	//res, err := s.data.msql.Exec("update seckill_goods set stock_count = stock_count - 1 where id = ?", id)
+	//s.log.Infof("result: %v, error: %v", res, err)
+
+	return nil
 }
 
 func NewSeckillGoodsRepo (data *Data, logger log.Logger) biz.SeckillGoodsRepo {

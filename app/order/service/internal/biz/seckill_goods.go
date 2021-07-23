@@ -17,6 +17,7 @@ type SeckillGoods struct {
 // 定义方法
 type SeckillGoodsRepo interface {
 	GetGoods(ctx context.Context,id int64) (*SeckillGoods, error)
+	DecrGoodsStock(ctx context.Context,id int64) error
 }
 
 type SeckillGoodsUsecase struct {
@@ -37,4 +38,12 @@ func (g SeckillGoodsUsecase) GetSeckillGoods(ctx context.Context, id int64) (*Se
 		return nil, err
 	}
 	return goods, nil
+}
+
+func (g SeckillGoodsUsecase) DecrGoodsStock(ctx context.Context, id int64) error {
+	err := g.repo.DecrGoodsStock(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

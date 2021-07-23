@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"database/sql"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/nacos/registry"
@@ -22,6 +23,8 @@ type Data struct {
 	// TODO warpped database client
 	db *ent.Client
 
+	msql *sql.DB
+
 	// Gconn *grpc.ClientConn
 	userRpc *ggrpc.ClientConn
 
@@ -31,6 +34,7 @@ type Data struct {
 // NewData .
 func NewData(conf *conf.Data, logger log.Logger, rr *registry.Registry) (*Data, func(), error) {
 
+	//orm ent
 	log := log.NewHelper(log.With(logger, "module", "server-service/data"))
 
 	client, err := ent.Open(
@@ -45,6 +49,13 @@ func NewData(conf *conf.Data, logger log.Logger, rr *registry.Registry) (*Data, 
 	if err := client.Schema.Create(context.Background()); err != nil {
 		log.Errorf("failed creating schema resources: %v", err)
 		return nil, nil, err
+	}
+
+	// mysql
+	msql, err := sql.Open("mysql", conf.Database.Source)
+
+	if err != nil {
+		log.Errorf("failed conn mysql %v", err)
 	}
 
 	// redis
@@ -70,6 +81,7 @@ func NewData(conf *conf.Data, logger log.Logger, rr *registry.Registry) (*Data, 
 
 	d := &Data{
 		db: client,
+		msql: msql,
 		userRpc: userRpc,
 		rdb: rdb,
 	}

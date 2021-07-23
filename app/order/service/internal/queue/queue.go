@@ -15,7 +15,6 @@ type Queue struct {
 
 func NewQueue() *Queue {
 	config := sarama.NewConfig()
-
 	config.Producer.Return.Successes = true
 	config.Producer.Partitioner = sarama.NewRandomPartitioner
 
@@ -60,8 +59,6 @@ func NewQueue() *Queue {
 			errors++
 		}
 	}()
-
-
 	return queue
 }
 
