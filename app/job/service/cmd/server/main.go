@@ -4,13 +4,13 @@ import (
 	"flag"
 	"os"
 
-	"github.com/peter-wow/seckill/app/job/service/internal/conf"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/peter-wow/seckill/app/job/service/internal/conf"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -73,6 +73,8 @@ func main() {
 		panic(err)
 	}
 	defer cleanup()
+
+	//TODO::task & job
 
 	// start and wait for stop signal
 	if err := app.Run(); err != nil {

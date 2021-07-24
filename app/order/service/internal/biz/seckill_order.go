@@ -31,3 +31,4 @@ func (uc *SeckillOrderUsecase) CreateSeckillOrder(ctx context.Context, o *Seckil
 
 	return uc.repo.CreateSeckillOrder(ctx, o)
 }
+

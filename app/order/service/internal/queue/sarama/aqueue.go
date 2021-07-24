@@ -1,4 +1,4 @@
-package queue
+package sarama
 
 import(
 	"github.com/Shopify/sarama"

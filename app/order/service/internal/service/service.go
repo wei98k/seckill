@@ -19,14 +19,16 @@ type OrderService struct {
 	goods *biz.SeckillGoodsUsecase
 	so *biz.SeckillOrderUsecase
 	sq *biz.OrderQueueUsecase
+	sr *biz.OrderQueueReceiverUsecase
 	log *log.Helper
 }
 
-func NewOrderService(uc *biz.OrderUsecase, so *biz.SeckillOrderUsecase, sq *biz.OrderQueueUsecase, goods *biz.SeckillGoodsUsecase, logger log.Logger) *OrderService  {
+func NewOrderService(uc *biz.OrderUsecase, so *biz.SeckillOrderUsecase, sq *biz.OrderQueueUsecase, goods *biz.SeckillGoodsUsecase, sr *biz.OrderQueueReceiverUsecase, logger log.Logger) *OrderService  {
 	return &OrderService{
 		uc: uc,
 		so: so,
 		sq: sq,
+		sr: sr,
 		goods: goods,
 		log: log.NewHelper(logger),
 	}

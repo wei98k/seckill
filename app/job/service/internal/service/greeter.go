@@ -2,10 +2,11 @@ package service
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/go-kratos/kratos/v2/log"
 	v1 "github.com/peter-wow/seckill/api/job/service/v1"
 	"github.com/peter-wow/seckill/app/job/service/internal/biz"
-	"github.com/go-kratos/kratos/v2/log"
 )
 
 // GreeterService is a greeter service.
@@ -18,6 +19,7 @@ type GreeterService struct {
 
 // NewGreeterService new a greeter service.
 func NewGreeterService(uc *biz.GreeterUsecase, logger log.Logger) *GreeterService {
+	fmt.Println("new greeter service")
 	return &GreeterService{uc: uc, log: log.NewHelper(logger)}
 }
 

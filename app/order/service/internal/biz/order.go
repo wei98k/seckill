@@ -45,3 +45,21 @@ func (uc *OrderQueueUsecase) CreateQueue(ctx context.Context) error {
 	uc.log.Info("queue test")
 	return uc.repo.CreateOrder(ctx)
 }
+
+type OrderQueueReceiverRepo interface {
+	CreateOrder(ctx context.Context) error
+}
+
+type OrderQueueReceiverUsecase struct {
+	repo OrderQueueReceiverRepo
+	log *log.Helper
+}
+
+func NewOrderQueueReceiverUsecase(repo OrderQueueReceiverRepo, logger log.Logger) *OrderQueueReceiverUsecase {
+	return &OrderQueueReceiverUsecase{repo: repo, log: log.NewHelper(logger)}
+}
+
+func (uc *OrderQueueReceiverUsecase) CreateQueue(ctx context.Context) error {
+	uc.log.Info("queue test")
+	return uc.repo.CreateOrder(ctx)
+}

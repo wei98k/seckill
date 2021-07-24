@@ -26,20 +26,17 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderReque
 func (s *OrderService) CreateSeckillOrder(ctx context.Context, req *pb.CreateSeckillOrderRequest) (*pb.CreateSeckillOrderReply, error) {
 	// 1. 检查用户是否合法
 	// 2. 检查库存状态
-	s.log.Info("seckill-order-service: param ", req)
+	s.log.Info("input data %v ", req)
 
 	//redis-key设计  SECKILL:GOODS:ID:23   vlaue: 10
-	// s.sq.CreateQueue(ctx)
 
 	//验证秒杀活动
 	goods, err1 := s.goods.GetSeckillGoods(ctx, req.Gid)
 
-	//TODO::判断活动是否开始
 	s.goods.DecrGoodsStock(ctx, req.Gid)
+	//TODO::判断活动是否开始
 	//TODO::判断活动是否结束
-
 	//TODO::判断库存是否充足
-
 
 	if err1 != nil {
 		s.log.Errorf("get goods error %v", err1)
@@ -56,6 +53,12 @@ func (s *OrderService) CreateSeckillOrder(ctx context.Context, req *pb.CreateSec
 	err := s.so.CreateSeckillOrder(ctx, param)
 
 	s.log.Info("seckill-order-service: err ", err)
+
+	//订单消息进入消息队列
+	s.sq.CreateQueue(ctx)
+
+	//消息队列-消费
+	// s.sr.CreateQueue(ctx)
 
 	return &pb.CreateSeckillOrderReply{},nil
 }
