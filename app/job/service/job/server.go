@@ -5,8 +5,12 @@ import (
 	"fmt"
 	"github.com/go-kratos/kratos/v2/transport"
 	event2 "github.com/peter-wow/seckill/app/job/service/event"
+	"github.com/peter-wow/seckill/app/job/service/internal/biz"
+	"github.com/peter-wow/seckill/app/job/service/internal/conf"
+	"github.com/peter-wow/seckill/app/job/service/internal/service"
 	"github.com/segmentio/kafka-go"
 	"log"
+	"strconv"
 )
 
 var _ transport.Server = (*Server)(nil)
@@ -15,6 +19,7 @@ var _ event2.Message = (*Message)(nil)
 type Server struct {
 	reader *kafka.Reader
 	topic string
+	uo *service.OrderService
 }
 
 type Message struct {
@@ -81,7 +86,13 @@ func (s Server) Close() error {
 	return nil
 }
 
-func NewKafkaReceiver(address []string, topic string) *Server {
+func NewJOBServer(c *conf.Server, uo *service.OrderService) *Server {
+
+	// []string{"192.168.2.27:9092"}, "order"
+
+	address := []string{"192.168.2.27:9092"}
+	topic := "order"
+
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers: address,
 		GroupID: "group-d",
@@ -89,13 +100,39 @@ func NewKafkaReceiver(address []string, topic string) *Server {
 		MinBytes: 1, // 10kb
 		MaxBytes: 10e6, // 10mb
 	})
-	return &Server{reader: r, topic: topic}
+	return &Server{reader: r, topic: topic, uo: uo}
 }
 
 func (s Server) Start(ctx context.Context) error {
 	fmt.Printf("job-job start")
+
+	//in := &v1.HelloRequest{
+	//	Name: "kratos",
+	//}
+	//s.t.SayHello(ctx, in)
+
+
 	s.Receive(ctx, func(ctx context.Context, message event2.Message) error {
 		//TODO::路由解析 根据不同的key调用不同的业务逻辑处理
+
+		msg := message.Header()
+
+		//fmt.Println(msg["uid"])
+
+		uid, err := strconv.ParseInt(msg["uid"], 10, 64)
+		gid, err := strconv.ParseInt(msg["goods_id"], 10, 64)
+		oid, err := strconv.ParseInt(msg["order_id"], 10, 64)
+
+		if err != nil {
+
+		}
+
+		in := &biz.SeckillOrder{
+			OrderId: oid,
+			UserId: uid,
+			GoodsId: gid,
+		}
+		s.uo.Create(ctx, in)
 		fmt.Printf("key:%s, value:%s, header:%s\n", message.Key(), message.Value(), message.Header())
 		return nil
 	})

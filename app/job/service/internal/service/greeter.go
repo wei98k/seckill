@@ -14,18 +14,24 @@ type GreeterService struct {
 	v1.UnimplementedJobServer
 
 	uc  *biz.GreeterUsecase
+	oc *biz.OrderQueueUsecase
 	log *log.Helper
 }
 
 // NewGreeterService new a greeter service.
-func NewGreeterService(uc *biz.GreeterUsecase, logger log.Logger) *GreeterService {
+func NewGreeterService(uc *biz.GreeterUsecase, oc *biz.OrderQueueUsecase, logger log.Logger) *GreeterService {
 	fmt.Println("new greeter service")
-	return &GreeterService{uc: uc, log: log.NewHelper(logger)}
+	return &GreeterService{uc: uc, oc: oc, log: log.NewHelper(logger)}
 }
 
 // SayHello implements helloworld.GreeterServer
 func (s *GreeterService) SayHello(ctx context.Context, in *v1.HelloRequest) (*v1.HelloReply, error) {
 	s.log.WithContext(ctx).Infof("SayHello Received: %v", in.GetName())
+
+	m := &biz.SeckillOrder{
+		OrderId: 111,
+	}
+	s.oc.Create(ctx, m)
 
 	if in.GetName() == "error" {
 		return nil, v1.ErrorUserNotFound("user not found: %s", in.GetName())

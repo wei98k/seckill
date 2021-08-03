@@ -6,7 +6,13 @@ import (
 )
 
 type OrderQueueRepo interface {
-	CreateOrder(context.Context) error
+	CreateOrder(ctx context.Context, o *SeckillOrder) (*SeckillOrder, error)
+}
+
+type SeckillOrder struct {
+	UserId int64
+	OrderId int64
+	GoodsId int64
 }
 
 type OrderQueueUsecase struct {
@@ -18,7 +24,6 @@ func NewOrderQueueUsecase(repo OrderQueueRepo, logger log.Logger) *OrderQueueUse
 	return &OrderQueueUsecase{repo: repo, log: log.NewHelper(logger)}
 }
 
-func (uc *OrderQueueUsecase) CreateQueue(ctx context.Context) error {
-
-	return uc.repo.CreateOrder(ctx)
+func (uc *OrderQueueUsecase) Create(ctx context.Context, o *SeckillOrder) (*SeckillOrder, error) {
+	return uc.repo.CreateOrder(ctx, o)
 }

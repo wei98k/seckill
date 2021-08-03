@@ -1,17 +1,29 @@
 package service
 
 import (
+	"context"
+	"fmt"
 	"github.com/peter-wow/seckill/app/job/service/internal/biz"
 )
 
 // OrderService is a order service.
 type OrderService struct {
-	uc  *biz.GreeterUsecase
 	oc *biz.OrderQueueUsecase
 }
 
-// NewOrderService new a greeter service.
-func NewOrderService(uc *biz.GreeterUsecase, oc *biz.OrderQueueUsecase) *OrderService {
 
-	return &OrderService{uc: uc, oc: oc}
+func (s *OrderService) Create(ctx context.Context, m *biz.SeckillOrder) {
+	fmt.Println("service - create")
+
+	//m := &biz.SeckillOrder{
+	//	OrderId: 111,
+	//}
+	s.oc.Create(ctx, m)
+
+}
+
+// NewOrderService new a greeter service.
+func NewOrderService(oc *biz.OrderQueueUsecase) *OrderService {
+
+	return &OrderService{ oc: oc}
 }

@@ -13,22 +13,27 @@ import (
 	"github.com/peter-wow/seckill/app/job/service/internal/data"
 	"github.com/peter-wow/seckill/app/job/service/internal/server"
 	"github.com/peter-wow/seckill/app/job/service/internal/service"
+	"github.com/peter-wow/seckill/app/job/service/job"
 )
 
 // Injectors from wire.go:
 
 // initApp init kratos application.
 func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
+	db := data.NewDB(confData, logger)
+	dataData, cleanup, err := data.NewData(db, logger)
 	if err != nil {
 		return nil, nil, err
 	}
 	greeterRepo := data.NewGreeterRepo(dataData, logger)
 	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
-	greeterService := service.NewGreeterService(greeterUsecase, logger)
+	orderQueueRepo := data.NewOrderRepo(dataData, logger)
+	orderQueueUsecase := biz.NewOrderQueueUsecase(orderQueueRepo, logger)
+	greeterService := service.NewGreeterService(greeterUsecase, orderQueueUsecase, logger)
 	httpServer := server.NewHTTPServer(confServer, greeterService, logger)
 	grpcServer := server.NewGRPCServer(confServer, greeterService, logger)
-	jobServer := server.NewJOBServer(confServer, greeterService, logger)
+	orderService := service.NewOrderService(orderQueueUsecase)
+	jobServer := job.NewJOBServer(confServer, orderService)
 	app := newApp(logger, httpServer, grpcServer, jobServer)
 	return app, func() {
 		cleanup()
