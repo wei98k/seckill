@@ -28,7 +28,8 @@ func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	greeterService := service.NewGreeterService(greeterUsecase, logger)
 	httpServer := server.NewHTTPServer(confServer, greeterService, logger)
 	grpcServer := server.NewGRPCServer(confServer, greeterService, logger)
-	app := newApp(logger, httpServer, grpcServer)
+	jobServer := server.NewJOBServer(confServer, greeterService, logger)
+	app := newApp(logger, httpServer, grpcServer, jobServer)
 	return app, func() {
 		cleanup()
 	}, nil

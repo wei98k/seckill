@@ -10,11 +10,6 @@ type Message interface {
 
 type Handler func(context.Context, Message) error
 
-type Sender interface {
-	Send(ctx context.Context, msg Message) error
-	Close() error
-}
-
 
 type Receiver interface {
 	Receive(ctx context.Context, handler Handler) error

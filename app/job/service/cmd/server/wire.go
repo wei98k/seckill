@@ -11,12 +11,11 @@ import (
 	"github.com/peter-wow/seckill/app/job/service/internal/biz"
 	"github.com/peter-wow/seckill/app/job/service/internal/conf"
 	"github.com/peter-wow/seckill/app/job/service/internal/data"
-	"github.com/peter-wow/seckill/app/job/service/internal/job"
 	"github.com/peter-wow/seckill/app/job/service/internal/server"
 	"github.com/peter-wow/seckill/app/job/service/internal/service"
 )
 
 // initApp init kratos application.
 func initApp(*conf.Server, *conf.Data, log.Logger) (*kratos.App, func(), error) {
-	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, job.ProviderSet, newApp))
+	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
 }

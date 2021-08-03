@@ -13,3 +13,5 @@ data:
     addr: 192.168.2.27:6379
     read_timeout: 0.2s
     write_timeout: 0.2s
+  kafka:
+    addr: 192.168.2.27:9092

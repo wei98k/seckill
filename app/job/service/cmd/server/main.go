@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/peter-wow/seckill/app/job/service/job"
 	"os"
 
 	"github.com/go-kratos/kratos/v2"
@@ -29,7 +30,7 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server) *kratos.App {
+func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, js *job.Server) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -39,6 +40,7 @@ func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server) *kratos.App {
 		kratos.Server(
 			hs,
 			gs,
+			js,
 		),
 	)
 }

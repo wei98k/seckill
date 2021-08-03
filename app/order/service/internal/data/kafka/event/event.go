@@ -15,7 +15,6 @@ type Sender interface {
 	Close() error
 }
 
-
 type Receiver interface {
 	Receive(ctx context.Context, handler Handler) error
 	Close() error

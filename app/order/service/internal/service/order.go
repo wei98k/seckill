@@ -55,7 +55,7 @@ func (s *OrderService) CreateSeckillOrder(ctx context.Context, req *pb.CreateSec
 	s.log.Info("seckill-order-service: err ", err)
 
 	//订单消息进入消息队列
-	s.sq.CreateQueue(ctx)
+	//s.sq.CreateQueue(ctx)
 
 	//消息队列-消费
 	// s.sr.CreateQueue(ctx)

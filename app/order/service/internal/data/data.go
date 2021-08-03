@@ -3,16 +3,19 @@ package data
 import (
 	"context"
 	"database/sql"
+	"github.com/go-kratos/etcd/registry"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"github.com/go-kratos/nacos/registry"
 	"github.com/go-redis/redis/extra/redisotel"
 	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
 	"github.com/peter-wow/seckill/app/order/service/internal/conf"
 	"github.com/peter-wow/seckill/app/order/service/internal/data/ent"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/kafka"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/kafka/event"
 	ggrpc "google.golang.org/grpc"
+	"strings"
 )
 
 // ProviderSet is data providers.
@@ -29,6 +32,8 @@ type Data struct {
 	userRpc *ggrpc.ClientConn
 
 	rdb *redis.Client
+
+	kafka event.Sender
 }
 
 // NewData .
@@ -79,11 +84,19 @@ func NewData(conf *conf.Data, logger log.Logger, rr *registry.Registry) (*Data, 
 		panic("grpc-error")
 	}
 
+	//kafka-sender
+	senderClient, err1 := kafka.NewKafkaSender(strings.Split(conf.Kafka.Addr, ","), "order")
+
+	if err1 != nil {
+		panic("kafka-error")
+	}
+
 	d := &Data{
 		db: client,
 		msql: msql,
 		userRpc: userRpc,
 		rdb: rdb,
+		kafka: senderClient,
 	}
 	return d, func() {
 		if err := d.db.Close(); err != nil {

@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/go-kratos/nacos/registry"
+	"github.com/go-kratos/etcd/registry"
 	"os"
 
 	"github.com/go-kratos/kratos/v2"

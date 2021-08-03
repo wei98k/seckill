@@ -3,9 +3,12 @@ package data
 import (
 	"context"
 	"fmt"
+	"github.com/bwmarrin/snowflake"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/v8"
 	"github.com/peter-wow/seckill/app/order/service/internal/biz"
+	"github.com/peter-wow/seckill/app/order/service/internal/data/kafka"
+	"strconv"
 	"time"
 )
 
@@ -55,8 +58,8 @@ func (s seckillOrderRepo) CreateSeckillOrder(ctx context.Context, seckillOrder *
 		}
 	}
 	println("current counter is ", cntValue)
-
 	//锁住之后处理的业务
+
 	res, err := s.data.db.SeckillOrder.Create().
 					SetGoodsID(seckillOrder.GoodsId).
 					SetOrderID(seckillOrder.OrderId).
@@ -65,6 +68,22 @@ func (s seckillOrderRepo) CreateSeckillOrder(ctx context.Context, seckillOrder *
 		return err
 	}
 	s.log.Info("seckill-data: res ", res)
+
+	// 订单消息队列处理
+	node, err := snowflake.NewNode(1)
+	if err != nil {
+		s.log.Error("snowflake generate error")
+		return nil
+	}
+	id := node.Generate()
+
+	msg := kafka.NewMessage("seckill-order", []byte("order"), map[string]string{
+		"uid": strconv.FormatInt(seckillOrder.UserId, 10),
+		"goods_id": strconv.FormatInt(seckillOrder.GoodsId, 10),
+		"order_id": fmt.Sprintf("%s", id),
+	})
+
+	s.data.kafka.Send(ctx, msg)
 
 
 	//释放锁
