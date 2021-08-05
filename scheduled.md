@@ -52,21 +52,6 @@ go kratos seckill system
 - [ ] CI/CD
 - [ ] 压力测试
 
-## Q&A
-
-如何实现MySQL读写分离?
-
-如何设计redis-key策略?
-
-如何解决超卖问题?
-
-如何解决分布式session?
-
-如何实现redis分布式锁? 
-
-分布式RPC补偿?
-
-
 ## 2021年07月05日14:09:33
 
 - [x] 搭建mysql主从复制架构
