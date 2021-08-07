@@ -28,12 +28,6 @@ func (o orderRepo) CreateOrder(ctx context.Context, order *biz.Order) error {
 		return err
 	}
 
-	//ucc := pb.NewUserClient(o.data.userRpc)
-	//
-	//res1, err := ucc.GetUser(ctx, &pb.GetUserRequest{Id: 1})
-
-	//o.log.Infof("nacos-client-api: ", res1, err)
-
 	o.log.Infof("order-create-result: %v", res)
 	return nil
 }

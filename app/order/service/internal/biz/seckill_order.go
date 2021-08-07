@@ -13,6 +13,9 @@ type SeckillOrder struct {
 
 type SeckillOrderRepo interface {
 	CreateSeckillOrder(ctx context.Context, seckillOrder *SeckillOrder) error
+	PostSeckillOrder(ctx context.Context, seckillOrder *SeckillOrder) error
+	GetSeckillOrder(ctx context.Context, id int64) (*SeckillOrder, error)
+	SendKafkaOrder(ctx context.Context, order *SeckillOrder) error
 }
 
 type SeckillOrderUsecase struct {
@@ -31,4 +34,17 @@ func (uc *SeckillOrderUsecase) CreateSeckillOrder(ctx context.Context, o *Seckil
 
 	return uc.repo.CreateSeckillOrder(ctx, o)
 }
+
+func (uc *SeckillOrderUsecase) PostOrder(ctx context.Context, o *SeckillOrder) error {
+	return uc.repo.PostSeckillOrder(ctx, o)
+}
+
+func (uc *SeckillOrderUsecase) GetOrder(ctx context.Context, id int64) (*SeckillOrder, error) {
+	return uc.repo.GetSeckillOrder(ctx, id)
+}
+
+func (uc *SeckillOrderUsecase) SendKafka(ctx context.Context, order *SeckillOrder) error {
+	return uc.repo.SendKafkaOrder(ctx, order)
+}
+
 

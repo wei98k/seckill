@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	pb "github.com/peter-wow/seckill/api/order/service/v1"
 	"github.com/peter-wow/seckill/app/order/service/internal/biz"
 )
@@ -22,6 +23,40 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderReque
 	//if err != nil {
 	//	return nil, err
 	//}
+
+	//##### kafka send qps/9.06
+
+	post := &biz.SeckillOrder{
+		UserId: 99,
+		GoodsId: req.Gid,
+		OrderId: 77,
+	}
+
+	err := s.so.SendKafka(ctx, post)
+
+	if err != nil {
+		fmt.Println(err)
+		s.log.Debug(err)
+		// s.log.Error(err)
+	}
+
+	//===== 测试mysql get qps/1006.57
+	//data, err := s.so.GetOrder(ctx, 2439)
+	//
+	//if err != nil {
+	//	s.log.Error(err)
+	//}
+	//
+	//s.log.Info(data)
+
+	//====== 测试mysql create  qps/440.46
+	//post := &biz.SeckillOrder{
+	//	UserId: 99,
+	//	GoodsId: req.Gid,
+	//	OrderId: 77,
+	//}
+	//
+	//s.so.PostOrder(ctx, post)
 
 	return &pb.CreateOrderReply{},nil
 }

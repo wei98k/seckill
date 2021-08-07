@@ -19,6 +19,48 @@ type seckillOrderRepo struct {
 	log *log.Helper
 }
 
+func (s seckillOrderRepo) SendKafkaOrder(ctx context.Context, order *biz.SeckillOrder) error {
+
+	//雪花算法-id生成
+	//node, err := snowflake.NewNode(1)
+	//if err != nil {
+	//	s.log.Error("snowflake generate error")
+	//	return nil
+	//}
+	//id := node.Generate()
+
+	// 订单消息队列处理
+	msg := kafka.NewMessage("test-order", []byte("order"), map[string]string{
+		"uid": strconv.FormatInt(order.UserId, 10),
+		"goods_id": strconv.FormatInt(order.GoodsId, 10),
+		"order_id": fmt.Sprintf("%s", "99882"),
+	})
+
+	return s.data.kafka.Send(ctx, msg)
+}
+
+func (s seckillOrderRepo) GetSeckillOrder(ctx context.Context, id int64) (*biz.SeckillOrder, error) {
+
+	entityOrder, err := s.data.db.SeckillOrder.Get(ctx, id)
+
+	return &biz.SeckillOrder{
+		GoodsId: entityOrder.GoodsID,
+		OrderId: entityOrder.OrderID,
+		UserId: entityOrder.UserID,
+	}, err
+}
+
+func (s seckillOrderRepo) PostSeckillOrder(ctx context.Context, seckillOrder *biz.SeckillOrder) error {
+	entityOrder, err := s.data.db.SeckillOrder.Create().
+							SetOrderID(seckillOrder.OrderId).
+							SetGoodsID(seckillOrder.GoodsId).
+							SetUserID(seckillOrder.UserId).Save(ctx)
+
+	s.log.Debug(entityOrder, err)
+
+	return err
+}
+
 func (s seckillOrderRepo) CreateSeckillOrder(ctx context.Context, seckillOrder *biz.SeckillOrder) error {
 
 	//=====lock-分布式锁-加锁
@@ -58,7 +100,7 @@ func (s seckillOrderRepo) CreateSeckillOrder(ctx context.Context, seckillOrder *
 		return errors.Errorf(-1, "商品库存不足", "")
 	}
 
-	// 订单消息队列处理
+	// 雪花ID生成
 	node, err := snowflake.NewNode(1)
 	if err != nil {
 		s.log.Error("snowflake generate error")
@@ -66,6 +108,7 @@ func (s seckillOrderRepo) CreateSeckillOrder(ctx context.Context, seckillOrder *
 	}
 	id := node.Generate()
 
+	// 订单消息队列处理
 	msg := kafka.NewMessage("seckill-order", []byte("order"), map[string]string{
 		"uid": strconv.FormatInt(seckillOrder.UserId, 10),
 		"goods_id": strconv.FormatInt(seckillOrder.GoodsId, 10),
@@ -89,6 +132,7 @@ func (s seckillOrderRepo) CreateSeckillOrder(ctx context.Context, seckillOrder *
 }
 
 func NewSeckillOrderRepo(data *Data, logger log.Logger) biz.SeckillOrderRepo {
+
 	return &seckillOrderRepo{
 		data: data,
 		log: log.NewHelper(log.With(logger, "module", "data/server-service")),
