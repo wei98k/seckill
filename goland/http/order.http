@@ -14,4 +14,4 @@ Content-Type: application/json
 POST {{host}}/seckill/order
 Content-Type: application/json
 
-{"gid": 1}
+{"gid":33}

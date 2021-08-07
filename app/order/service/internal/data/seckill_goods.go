@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/peter-wow/seckill/app/order/service/internal/biz"
+	"github.com/peter-wow/seckill/pkg/cache"
 )
 
 var _ biz.SeckillGoodsRepo = (*seckillGoodsRepo)(nil)
@@ -11,6 +12,23 @@ var _ biz.SeckillGoodsRepo = (*seckillGoodsRepo)(nil)
 type seckillGoodsRepo struct {
 	data *Data
 	log *log.Helper
+}
+
+func (s seckillGoodsRepo) GetGoodsOver(ctx context.Context, GoodsId int64) bool {
+	//如果key不存在、  res="",  err=nil
+	// res, err := s.data.rdb.Get(ctx, cache.SeckillGoodOverKey(GoodsId)).Result()
+
+	// key存在返回整型1 否则0
+	exist := s.data.rdb.Exists(ctx, cache.SeckillGoodOverKey(GoodsId)).Val()
+	if exist != 1 {
+		return false
+	}
+	return true
+}
+
+func (s seckillGoodsRepo) SetGoodsOver(ctx context.Context, GoodsId int64) error {
+	// 当设置bool类型redis保存字符串1或0
+	return s.data.rdb.Set(ctx, cache.SeckillGoodOverKey(GoodsId), true, 0).Err()
 }
 
 func (s seckillGoodsRepo) GetGoods(ctx context.Context, id int64) (*biz.SeckillGoods, error) {

@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/bwmarrin/snowflake"
+	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-redis/redis/v8"
 	"github.com/peter-wow/seckill/app/order/service/internal/biz"
 	"github.com/peter-wow/seckill/app/order/service/internal/data/kafka"
+	"github.com/peter-wow/seckill/pkg/cache"
 	"strconv"
-	"time"
 )
 
 var _ biz.SeckillOrderRepo = (*seckillOrderRepo)(nil)
@@ -21,53 +21,42 @@ type seckillOrderRepo struct {
 
 func (s seckillOrderRepo) CreateSeckillOrder(ctx context.Context, seckillOrder *biz.SeckillOrder) error {
 
-	//判断库存剩余量
-	//stock, err := s.data.rdb.Decr(ctx, "SECKILL:ORDER:ID:12").Result()
+	//=====lock-分布式锁-加锁
+	//var lockKey = "counter_lock"
+	//var counterKey = "counter"
 	//
-	//if stock < 0 {
-	//	//TODO::通知前端把按钮改成卖完了
-	//	//TODO::接口不在接收请求
-	//	s.log.Infof("剩余stock: %v, error: %v", stock, err)
-	//	return errors.Errorf(-1, "卖完了。。。", "")
+	//// lock
+	//resp := s.data.rdb.SetNX(ctx, lockKey, 1, time.Second*5)
+	//lockSuccess, err := resp.Result()
+	//
+	//if err != nil || !lockSuccess {
+	//	fmt.Println(err, "lock result: ", lockSuccess)
+	//	return nil
 	//}
-
-	// 分布式锁-redis
-
-	var lockKey = "counter_lock"
-	var counterKey = "counter"
-
-	// lock
-	resp := s.data.rdb.SetNX(ctx, lockKey, 1, time.Second*5)
-	lockSuccess, err := resp.Result()
-
-	if err != nil || !lockSuccess {
-		fmt.Println(err, "lock result: ", lockSuccess)
-		return nil
-	}
-
-	// counter ++
-	getResp := s.data.rdb.Get(ctx, counterKey)
-	cntValue, err := getResp.Int64()
-	if err == nil || err == redis.Nil {
-		cntValue++
-		resp := s.data.rdb.Set(ctx, counterKey, cntValue, 0)
-		_, err := resp.Result()
-		if err != nil {
-			// log err
-			println("set value error!")
-		}
-	}
-	println("current counter is ", cntValue)
+	//
+	//// counter ++
+	//getResp := s.data.rdb.Get(ctx, counterKey)
+	//cntValue, err := getResp.Int64()
+	//if err == nil || err == redis.Nil {
+	//	cntValue++
+	//	resp := s.data.rdb.Set(ctx, counterKey, cntValue, 0)
+	//	_, err := resp.Result()
+	//	if err != nil {
+	//		// log err
+	//		println("set value error!")
+	//	}
+	//}
+	//println("current counter is ", cntValue)
 	//锁住之后处理的业务
 
-	res, err := s.data.db.SeckillOrder.Create().
-					SetGoodsID(seckillOrder.GoodsId).
-					SetOrderID(seckillOrder.OrderId).
-					SetUserID(seckillOrder.UserId).Save(ctx)
-	if err != nil {
-		return err
+
+	stock := s.data.rdb.Decr(ctx, cache.SeckillGoodStockKey(seckillOrder.GoodsId)).Val()
+
+	if stock <= -1 {
+		//商品库存已不足
+		s.data.rdb.Del(ctx, cache.SeckillGoodOverKey(seckillOrder.GoodsId))
+		return errors.Errorf(-1, "商品库存不足", "")
 	}
-	s.log.Info("seckill-data: res ", res)
 
 	// 订单消息队列处理
 	node, err := snowflake.NewNode(1)
@@ -84,16 +73,17 @@ func (s seckillOrderRepo) CreateSeckillOrder(ctx context.Context, seckillOrder *
 	})
 
 	s.data.kafka.Send(ctx, msg)
+	//生成订单、减掉库存、(如何用户5分钟内未付款、再回执加回库存)
 
 
-	//释放锁
-	delResp := s.data.rdb.Del(ctx, lockKey)
-	unlockSuccess, err := delResp.Result()
-	if err == nil && unlockSuccess > 0 {
-		println("unlock success!")
-	} else {
-		println("unlock failed", err)
-	}
+	//=====lock-分布式锁-释放锁
+	//delResp := s.data.rdb.Del(ctx, lockKey)
+	//unlockSuccess, err := delResp.Result()
+	//if err == nil && unlockSuccess > 0 {
+	//	println("unlock success!")
+	//} else {
+	//	println("unlock failed", err)
+	//}
 
 	return nil
 }

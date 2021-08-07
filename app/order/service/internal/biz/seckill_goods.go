@@ -14,10 +14,13 @@ type SeckillGoods struct {
 	StartDate time.Time
 	EndDate time.Time
 }
-// 定义方法
+
+// SeckillGoodsRepo 定义方法
 type SeckillGoodsRepo interface {
 	GetGoods(ctx context.Context,id int64) (*SeckillGoods, error)
 	DecrGoodsStock(ctx context.Context,id int64) error
+	GetGoodsOver(ctx context.Context, GoodsId int64) bool
+	SetGoodsOver(ctx context.Context, GoodsId int64) error
 }
 
 type SeckillGoodsUsecase struct {
@@ -46,4 +49,12 @@ func (g SeckillGoodsUsecase) DecrGoodsStock(ctx context.Context, id int64) error
 		return err
 	}
 	return nil
+}
+
+func (g SeckillGoodsUsecase) GetSeckillGoodsOver(ctx context.Context, id int64) bool {
+	return g.repo.GetGoodsOver(ctx, id)
+}
+
+func (g SeckillGoodsUsecase) SetSeckillGoodsOver(ctx context.Context, id int64) error {
+	return g.repo.SetGoodsOver(ctx, id)
 }

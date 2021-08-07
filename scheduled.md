@@ -1,6 +1,6 @@
 # seckill (GO kratos 微服务秒杀系统)
 
-go kratos seckill system
+> 秒杀系统概要任务、大任务计划安排
 
 
 ## Client-API
