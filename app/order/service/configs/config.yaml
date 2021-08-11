@@ -1,7 +1,7 @@
 server:
   http:
     addr: 0.0.0.0:8001
-    timeout: 1s
+    timeout: 2s
   grpc:
     addr: 0.0.0.0:9001
     timeout: 1s
@@ -14,4 +14,4 @@ data:
     read_timeout: 0.2s
     write_timeout: 0.2s
   kafka:
-    addr: 192.168.2.27:9092
+    addr: 127.0.0.1:9092
