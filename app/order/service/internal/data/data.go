@@ -3,6 +3,8 @@ package data
 import (
 	"context"
 	"database/sql"
+	"strings"
+
 	"github.com/go-kratos/etcd/registry"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
@@ -15,7 +17,6 @@ import (
 	"github.com/peter-wow/seckill/app/order/service/internal/data/kafka"
 	"github.com/peter-wow/seckill/app/order/service/internal/data/kafka/event"
 	ggrpc "google.golang.org/grpc"
-	"strings"
 )
 
 // ProviderSet is data providers.
@@ -92,11 +93,11 @@ func NewData(conf *conf.Data, logger log.Logger, rr *registry.Registry) (*Data, 
 	}
 
 	d := &Data{
-		db: client,
-		msql: msql,
+		db:      client,
+		msql:    msql,
 		userRpc: userRpc,
-		rdb: rdb,
-		kafka: senderClient,
+		rdb:     rdb,
+		kafka:   senderClient,
 	}
 	return d, func() {
 		if err := d.db.Close(); err != nil {

@@ -1,10 +1,11 @@
 package server
 
 import (
+	"log"
+
 	"github.com/go-kratos/etcd/registry"
 	"github.com/google/wire"
 	etcd "go.etcd.io/etcd/client/v3"
-	"log"
 )
 
 // ProviderSet is server providers.
@@ -42,7 +43,7 @@ func NewRegistrar() *registry.Registry {
 	//return registry.New(client)
 
 	client, err := etcd.New(etcd.Config{
-		Endpoints: []string{"192.168.2.27:2379"},
+		Endpoints: []string{"192.168.0.106:2379"},
 	})
 	if err != nil {
 		log.Fatal(err)

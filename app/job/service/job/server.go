@@ -3,14 +3,15 @@ package job
 import (
 	"context"
 	"fmt"
+	"log"
+	"strconv"
+
 	"github.com/go-kratos/kratos/v2/transport"
 	event2 "github.com/peter-wow/seckill/app/job/service/event"
 	"github.com/peter-wow/seckill/app/job/service/internal/biz"
 	"github.com/peter-wow/seckill/app/job/service/internal/conf"
 	"github.com/peter-wow/seckill/app/job/service/internal/service"
 	"github.com/segmentio/kafka-go"
-	"log"
-	"strconv"
 )
 
 var _ transport.Server = (*Server)(nil)
@@ -18,13 +19,13 @@ var _ event2.Message = (*Message)(nil)
 
 type Server struct {
 	reader *kafka.Reader
-	topic string
-	uo *service.OrderService
+	topic  string
+	uo     *service.OrderService
 }
 
 type Message struct {
-	key string
-	value []byte
+	key    string
+	value  []byte
 	header map[string]string
 }
 
@@ -32,18 +33,18 @@ func (m *Message) Key() string {
 	return m.key
 }
 
-func (m *Message) Value() []byte  {
+func (m *Message) Value() []byte {
 	return m.value
 }
 
-func (m *Message) Header() map[string]string  {
+func (m *Message) Header() map[string]string {
 	return m.header
 }
 
 func NewMessage(key string, value []byte, header map[string]string) event2.Message {
 	return &Message{
-		key: key,
-		value: value,
+		key:    key,
+		value:  value,
 		header: header,
 	}
 }
@@ -63,8 +64,8 @@ func (s Server) Receive(ctx context.Context, handler event2.Handler) error {
 				}
 			}
 			err = handler(context.Background(), &Message{
-				key: string(m.Key),
-				value: m.Value,
+				key:    string(m.Key),
+				value:  m.Value,
 				header: h,
 			})
 			if err != nil {
@@ -90,14 +91,14 @@ func NewJOBServer(c *conf.Server, uo *service.OrderService) *Server {
 
 	// []string{"192.168.2.27:9092"}, "order"
 
-	address := []string{"192.168.2.27:9092"}
+	address := []string{"192.168.0.106:9092"}
 	topic := "order"
 
 	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: address,
-		GroupID: "group-d",
-		Topic: topic,
-		MinBytes: 1, // 10kb
+		Brokers:  address,
+		GroupID:  "group-d",
+		Topic:    topic,
+		MinBytes: 1,    // 10kb
 		MaxBytes: 10e6, // 10mb
 	})
 	return &Server{reader: r, topic: topic, uo: uo}
@@ -110,7 +111,6 @@ func (s Server) Start(ctx context.Context) error {
 	//	Name: "kratos",
 	//}
 	//s.t.SayHello(ctx, in)
-
 
 	s.Receive(ctx, func(ctx context.Context, message event2.Message) error {
 		//TODO::路由解析 根据不同的key调用不同的业务逻辑处理
@@ -129,7 +129,7 @@ func (s Server) Start(ctx context.Context) error {
 
 		in := &biz.SeckillOrder{
 			OrderId: oid,
-			UserId: uid,
+			UserId:  uid,
 			GoodsId: gid,
 		}
 		s.uo.Create(ctx, in)
