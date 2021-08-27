@@ -18,12 +18,16 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 type GoodsHTTPServer interface {
+	CreateOrders(context.Context, *CreateOrdersRequest) (*CreateOrdersReply, error)
 	GetGoods(context.Context, *GetGoodsRequest) (*GetGoodsReply, error)
+	GetOrders(context.Context, *GetOrdersRequest) (*GetOrdersReply, error)
 }
 
 func RegisterGoodsHTTPServer(s *http.Server, srv GoodsHTTPServer) {
 	r := s.Route("/")
 	r.GET("/goods/{id}", _Goods_GetGoods0_HTTP_Handler(srv))
+	r.GET("/orders/{id}", _Goods_GetOrders0_HTTP_Handler(srv))
+	r.POST("/orders", _Goods_CreateOrders0_HTTP_Handler(srv))
 }
 
 func _Goods_GetGoods0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) error {
@@ -48,8 +52,51 @@ func _Goods_GetGoods0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) e
 	}
 }
 
+func _Goods_GetOrders0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetOrdersRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.goods.service.v1.Goods/GetOrders")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetOrders(ctx, req.(*GetOrdersRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetOrdersReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Goods_CreateOrders0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in CreateOrdersRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.goods.service.v1.Goods/CreateOrders")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CreateOrders(ctx, req.(*CreateOrdersRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*CreateOrdersReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type GoodsHTTPClient interface {
+	CreateOrders(ctx context.Context, req *CreateOrdersRequest, opts ...http.CallOption) (rsp *CreateOrdersReply, err error)
 	GetGoods(ctx context.Context, req *GetGoodsRequest, opts ...http.CallOption) (rsp *GetGoodsReply, err error)
+	GetOrders(ctx context.Context, req *GetOrdersRequest, opts ...http.CallOption) (rsp *GetOrdersReply, err error)
 }
 
 type GoodsHTTPClientImpl struct {
@@ -60,11 +107,37 @@ func NewGoodsHTTPClient(client *http.Client) GoodsHTTPClient {
 	return &GoodsHTTPClientImpl{client}
 }
 
+func (c *GoodsHTTPClientImpl) CreateOrders(ctx context.Context, in *CreateOrdersRequest, opts ...http.CallOption) (*CreateOrdersReply, error) {
+	var out CreateOrdersReply
+	pattern := "/orders"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/api.goods.service.v1.Goods/CreateOrders"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
 func (c *GoodsHTTPClientImpl) GetGoods(ctx context.Context, in *GetGoodsRequest, opts ...http.CallOption) (*GetGoodsReply, error) {
 	var out GetGoodsReply
 	pattern := "/goods/{id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation("/api.goods.service.v1.Goods/GetGoods"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *GoodsHTTPClientImpl) GetOrders(ctx context.Context, in *GetOrdersRequest, opts ...http.CallOption) (*GetOrdersReply, error) {
+	var out GetOrdersReply
+	pattern := "/orders/{id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation("/api.goods.service.v1.Goods/GetOrders"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

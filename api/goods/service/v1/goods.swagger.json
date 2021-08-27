@@ -46,6 +46,69 @@
           "Goods"
         ]
       }
+    },
+    "/orders": {
+      "post": {
+        "operationId": "Goods_CreateOrders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateOrdersReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateOrdersRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Goods"
+        ]
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "operationId": "Goods_GetOrders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetOrdersReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "Goods"
+        ]
+      }
     }
   },
   "definitions": {
@@ -82,7 +145,21 @@
     "v1CreateGoodsReply": {
       "type": "object"
     },
+    "v1CreateOrdersReply": {
+      "type": "object"
+    },
+    "v1CreateOrdersRequest": {
+      "type": "object",
+      "properties": {
+        "sn": {
+          "type": "string"
+        }
+      }
+    },
     "v1DeleteGoodsReply": {
+      "type": "object"
+    },
+    "v1DeleteOrdersReply": {
       "type": "object"
     },
     "v1GetGoodsReply": {
@@ -100,10 +177,24 @@
         }
       }
     },
+    "v1GetOrdersReply": {
+      "type": "object",
+      "properties": {
+        "sn": {
+          "type": "string"
+        }
+      }
+    },
     "v1ListGoodsReply": {
       "type": "object"
     },
+    "v1ListOrdersReply": {
+      "type": "object"
+    },
     "v1UpdateGoodsReply": {
+      "type": "object"
+    },
+    "v1UpdateOrdersReply": {
       "type": "object"
     }
   }

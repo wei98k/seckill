@@ -18,6 +18,22 @@ service Goods {
         };
     }
     rpc ListGoods (ListGoodsRequest) returns (ListGoodsReply);
+
+
+    rpc GetOrders (GetOrdersRequest) returns (GetOrdersReply) {
+        option (google.api.http) = {
+            get: "/orders/{id}",
+        };
+    }
+    rpc CreateOrders (CreateOrdersRequest) returns (CreateOrdersReply) {
+        option (google.api.http) = {
+            post: "/orders",
+            body: "*"
+        };
+    }
+    rpc UpdateOrders (UpdateOrdersRequest) returns (UpdateOrdersReply);
+    rpc DeleteOrders (DeleteOrdersRequest) returns (DeleteOrdersReply);
+    rpc ListOrders (ListOrdersRequest) returns (ListOrdersReply);
 }
 
 message CreateGoodsRequest {}
@@ -40,3 +56,24 @@ message GetGoodsReply {
 
 message ListGoodsRequest {}
 message ListGoodsReply {}
+
+message GetOrdersRequest {
+    int64 id = 1;
+}
+message GetOrdersReply {
+    string sn = 1;
+}
+
+message CreateOrdersRequest {
+    string sn = 1;
+}
+message CreateOrdersReply {}
+
+message UpdateOrdersRequest {}
+message UpdateOrdersReply {}
+
+message DeleteOrdersRequest {}
+message DeleteOrdersReply {}
+
+message ListOrdersRequest {}
+message ListOrdersReply {}

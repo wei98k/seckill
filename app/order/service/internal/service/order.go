@@ -58,6 +58,10 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderReque
 	//
 	//s.so.PostOrder(ctx, post)
 
+	//===== 测试gRPC通讯 start
+
+	//===== 测试gRPC通信 end
+
 	//===== 测试分布式管理器dtm start
 
 	// saga := dtmcli.NewSaga(DtmServer, dtmcli.MustGenGid(DtmServer)).

@@ -2,24 +2,25 @@ package biz
 
 import (
 	"context"
+
 	"github.com/go-kratos/kratos/v2/log"
 )
 
 type Goods struct {
-	Id int64
+	Id    int64
 	Title string
 	Intro string
 }
 
 type GoodsUsecase struct {
 	repo GoodsRepo
-	log *log.Helper
+	log  *log.Helper
 }
 
 func NewGoodsUsecase(repo GoodsRepo, logger log.Logger) *GoodsUsecase {
 	return &GoodsUsecase{
 		repo: repo,
-		log: log.NewHelper(logger),
+		log:  log.NewHelper(logger),
 	}
 }
 

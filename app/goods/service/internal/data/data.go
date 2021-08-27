@@ -2,16 +2,17 @@ package data
 
 import (
 	"context"
-	"github.com/peter-wow/seckill/app/goods/service/internal/conf"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
+	"github.com/peter-wow/seckill/app/goods/service/internal/conf"
 	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewGoodsRepo)
+var ProviderSet = wire.NewSet(NewData, NewGoodsRepo, NewOrdersRepo)
 
 // Data .
 type Data struct {

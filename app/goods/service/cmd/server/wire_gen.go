@@ -25,7 +25,9 @@ func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	}
 	goodsRepo := data.NewGoodsRepo(dataData, logger)
 	goodsUsecase := biz.NewGoodsUsecase(goodsRepo, logger)
-	goodsService := service.NewGoodsService(goodsUsecase, logger)
+	ordersRepo := data.NewOrdersRepo(dataData, logger)
+	ordersUsecase := biz.NewOrdersUsecase(ordersRepo, logger)
+	goodsService := service.NewGoodsService(goodsUsecase, ordersUsecase, logger)
 	httpServer := server.NewHTTPServer(confServer, goodsService, logger)
 	grpcServer := server.NewGRPCServer(confServer, goodsService, logger)
 	app := newApp(logger, httpServer, grpcServer)

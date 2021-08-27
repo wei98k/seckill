@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/goods"
+	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/order"
+	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/ordergoods"
 	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/schema"
 )
 
@@ -23,4 +25,24 @@ func init() {
 	goodsDescUpdatedAt := goodsFields[4].Descriptor()
 	// goods.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	goods.DefaultUpdatedAt = goodsDescUpdatedAt.Default.(func() time.Time)
+	orderFields := schema.Order{}.Fields()
+	_ = orderFields
+	// orderDescCreatedAt is the schema descriptor for created_at field.
+	orderDescCreatedAt := orderFields[4].Descriptor()
+	// order.DefaultCreatedAt holds the default value on creation for the created_at field.
+	order.DefaultCreatedAt = orderDescCreatedAt.Default.(func() time.Time)
+	// orderDescUpdatedAt is the schema descriptor for updated_at field.
+	orderDescUpdatedAt := orderFields[5].Descriptor()
+	// order.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	order.DefaultUpdatedAt = orderDescUpdatedAt.Default.(func() time.Time)
+	ordergoodsFields := schema.OrderGoods{}.Fields()
+	_ = ordergoodsFields
+	// ordergoodsDescCreatedAt is the schema descriptor for created_at field.
+	ordergoodsDescCreatedAt := ordergoodsFields[4].Descriptor()
+	// ordergoods.DefaultCreatedAt holds the default value on creation for the created_at field.
+	ordergoods.DefaultCreatedAt = ordergoodsDescCreatedAt.Default.(func() time.Time)
+	// ordergoodsDescUpdatedAt is the schema descriptor for updated_at field.
+	ordergoodsDescUpdatedAt := ordergoodsFields[5].Descriptor()
+	// ordergoods.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	ordergoods.DefaultUpdatedAt = ordergoodsDescUpdatedAt.Default.(func() time.Time)
 }

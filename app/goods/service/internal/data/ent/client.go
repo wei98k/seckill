@@ -10,6 +10,8 @@ import (
 	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/migrate"
 
 	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/goods"
+	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/order"
+	"github.com/peter-wow/seckill/app/goods/service/internal/data/ent/ordergoods"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -22,6 +24,10 @@ type Client struct {
 	Schema *migrate.Schema
 	// Goods is the client for interacting with the Goods builders.
 	Goods *GoodsClient
+	// Order is the client for interacting with the Order builders.
+	Order *OrderClient
+	// OrderGoods is the client for interacting with the OrderGoods builders.
+	OrderGoods *OrderGoodsClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -36,6 +42,8 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Goods = NewGoodsClient(c.config)
+	c.Order = NewOrderClient(c.config)
+	c.OrderGoods = NewOrderGoodsClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -67,9 +75,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Goods:  NewGoodsClient(cfg),
+		ctx:        ctx,
+		config:     cfg,
+		Goods:      NewGoodsClient(cfg),
+		Order:      NewOrderClient(cfg),
+		OrderGoods: NewOrderGoodsClient(cfg),
 	}, nil
 }
 
@@ -87,8 +97,10 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		config: cfg,
-		Goods:  NewGoodsClient(cfg),
+		config:     cfg,
+		Goods:      NewGoodsClient(cfg),
+		Order:      NewOrderClient(cfg),
+		OrderGoods: NewOrderGoodsClient(cfg),
 	}, nil
 }
 
@@ -119,6 +131,8 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Goods.Use(hooks...)
+	c.Order.Use(hooks...)
+	c.OrderGoods.Use(hooks...)
 }
 
 // GoodsClient is a client for the Goods schema.
@@ -209,4 +223,184 @@ func (c *GoodsClient) GetX(ctx context.Context, id int64) *Goods {
 // Hooks returns the client hooks.
 func (c *GoodsClient) Hooks() []Hook {
 	return c.hooks.Goods
+}
+
+// OrderClient is a client for the Order schema.
+type OrderClient struct {
+	config
+}
+
+// NewOrderClient returns a client for the Order from the given config.
+func NewOrderClient(c config) *OrderClient {
+	return &OrderClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `order.Hooks(f(g(h())))`.
+func (c *OrderClient) Use(hooks ...Hook) {
+	c.hooks.Order = append(c.hooks.Order, hooks...)
+}
+
+// Create returns a create builder for Order.
+func (c *OrderClient) Create() *OrderCreate {
+	mutation := newOrderMutation(c.config, OpCreate)
+	return &OrderCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Order entities.
+func (c *OrderClient) CreateBulk(builders ...*OrderCreate) *OrderCreateBulk {
+	return &OrderCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Order.
+func (c *OrderClient) Update() *OrderUpdate {
+	mutation := newOrderMutation(c.config, OpUpdate)
+	return &OrderUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OrderClient) UpdateOne(o *Order) *OrderUpdateOne {
+	mutation := newOrderMutation(c.config, OpUpdateOne, withOrder(o))
+	return &OrderUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OrderClient) UpdateOneID(id int64) *OrderUpdateOne {
+	mutation := newOrderMutation(c.config, OpUpdateOne, withOrderID(id))
+	return &OrderUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Order.
+func (c *OrderClient) Delete() *OrderDelete {
+	mutation := newOrderMutation(c.config, OpDelete)
+	return &OrderDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *OrderClient) DeleteOne(o *Order) *OrderDeleteOne {
+	return c.DeleteOneID(o.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *OrderClient) DeleteOneID(id int64) *OrderDeleteOne {
+	builder := c.Delete().Where(order.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OrderDeleteOne{builder}
+}
+
+// Query returns a query builder for Order.
+func (c *OrderClient) Query() *OrderQuery {
+	return &OrderQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Order entity by its id.
+func (c *OrderClient) Get(ctx context.Context, id int64) (*Order, error) {
+	return c.Query().Where(order.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OrderClient) GetX(ctx context.Context, id int64) *Order {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *OrderClient) Hooks() []Hook {
+	return c.hooks.Order
+}
+
+// OrderGoodsClient is a client for the OrderGoods schema.
+type OrderGoodsClient struct {
+	config
+}
+
+// NewOrderGoodsClient returns a client for the OrderGoods from the given config.
+func NewOrderGoodsClient(c config) *OrderGoodsClient {
+	return &OrderGoodsClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `ordergoods.Hooks(f(g(h())))`.
+func (c *OrderGoodsClient) Use(hooks ...Hook) {
+	c.hooks.OrderGoods = append(c.hooks.OrderGoods, hooks...)
+}
+
+// Create returns a create builder for OrderGoods.
+func (c *OrderGoodsClient) Create() *OrderGoodsCreate {
+	mutation := newOrderGoodsMutation(c.config, OpCreate)
+	return &OrderGoodsCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of OrderGoods entities.
+func (c *OrderGoodsClient) CreateBulk(builders ...*OrderGoodsCreate) *OrderGoodsCreateBulk {
+	return &OrderGoodsCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for OrderGoods.
+func (c *OrderGoodsClient) Update() *OrderGoodsUpdate {
+	mutation := newOrderGoodsMutation(c.config, OpUpdate)
+	return &OrderGoodsUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OrderGoodsClient) UpdateOne(og *OrderGoods) *OrderGoodsUpdateOne {
+	mutation := newOrderGoodsMutation(c.config, OpUpdateOne, withOrderGoods(og))
+	return &OrderGoodsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OrderGoodsClient) UpdateOneID(id int64) *OrderGoodsUpdateOne {
+	mutation := newOrderGoodsMutation(c.config, OpUpdateOne, withOrderGoodsID(id))
+	return &OrderGoodsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for OrderGoods.
+func (c *OrderGoodsClient) Delete() *OrderGoodsDelete {
+	mutation := newOrderGoodsMutation(c.config, OpDelete)
+	return &OrderGoodsDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *OrderGoodsClient) DeleteOne(og *OrderGoods) *OrderGoodsDeleteOne {
+	return c.DeleteOneID(og.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *OrderGoodsClient) DeleteOneID(id int64) *OrderGoodsDeleteOne {
+	builder := c.Delete().Where(ordergoods.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OrderGoodsDeleteOne{builder}
+}
+
+// Query returns a query builder for OrderGoods.
+func (c *OrderGoodsClient) Query() *OrderGoodsQuery {
+	return &OrderGoodsQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a OrderGoods entity by its id.
+func (c *OrderGoodsClient) Get(ctx context.Context, id int64) (*OrderGoods, error) {
+	return c.Query().Where(ordergoods.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OrderGoodsClient) GetX(ctx context.Context, id int64) *OrderGoods {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *OrderGoodsClient) Hooks() []Hook {
+	return c.hooks.OrderGoods
 }

@@ -1,4 +1,14 @@
-GET {{host}}/goods/1
+GET http://127.0.0.1:8003/goods/1
 Accept: application/json
 
 ###
+
+GET http://127.0.0.1:8003/orders/1
+Accept: application/json
+
+###
+
+POST http://127.0.0.1:8003/orders
+Content-Type: application/json
+
+{"sn":"ok123123"}
