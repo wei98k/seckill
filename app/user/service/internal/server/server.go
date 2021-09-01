@@ -45,7 +45,7 @@ func NewRegistrar() *registry.Registry {
 	//return registry.New(client)
 
 	client, err := etcd.New(etcd.Config{
-		Endpoints: []string{"192.168.0.110:2379"},
+		Endpoints: []string{"192.168.0.111:2379"},
 	})
 	if err != nil {
 		log.Fatal(err)

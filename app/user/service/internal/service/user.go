@@ -1,18 +1,18 @@
-
 package service
 
 import (
 	"context"
+
 	pb "github.com/peter-wow/seckill/api/user/service/v1"
 	"github.com/peter-wow/seckill/app/user/service/internal/biz"
 )
 
-
+// 创建用户
 func (s *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserReply, error) {
-	u := &biz.RegUser{Username: req.Username, PasswordHash: req.Password}
-	rv, err := s.uc.Create(ctx, u)
+	// u := &biz.RegUser{Username: req.Username, PasswordHash: req.Password}
+	// rv, err := s.uc.Create(ctx, u)
 
-	s.log.Infof("service/user/CreateUser: rv: %v, err: %v", rv, err)
+	// s.log.Infof("service/user/CreateUser: rv: %v, err: %v", rv, err)
 
 	return &pb.CreateUserReply{}, nil
 }

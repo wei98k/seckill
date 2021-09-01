@@ -111,3 +111,24 @@ func (s *OrderService) CreateSeckillOrder(ctx context.Context, req *pb.CreateSec
 	return &pb.CreateSeckillOrderReply{}, nil
 	// 状态码返回
 }
+
+func (s *OrderService) CreateSeckillOrderTry(ctx context.Context, req *pb.CreateSeckillOrderRequest) (*pb.CreateSeckillOrderReply, error) {
+
+	return &pb.CreateSeckillOrderReply{
+		DtmResult: "FAILURE",
+	}, nil
+}
+
+func (s *OrderService) CreateSeckillOrderConfirm(ctx context.Context, req *pb.CreateSeckillOrderRequest) (*pb.CreateSeckillOrderReply, error) {
+
+	return &pb.CreateSeckillOrderReply{
+		DtmResult: "SUCCESS",
+	}, nil
+}
+
+func (s *OrderService) CreateSeckillOrderCancel(ctx context.Context, req *pb.CreateSeckillOrderRequest) (*pb.CreateSeckillOrderReply, error) {
+
+	return &pb.CreateSeckillOrderReply{
+		DtmResult: "SUCCESS",
+	}, nil
+}

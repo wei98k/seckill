@@ -109,6 +109,105 @@
           "Goods"
         ]
       }
+    },
+    "/ordersCancel": {
+      "post": {
+        "summary": "分布式事务-tcc-cancel",
+        "operationId": "Goods_CreateOrdersTccCancel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateOrdersReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateOrdersRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Goods"
+        ]
+      }
+    },
+    "/ordersConfirm": {
+      "post": {
+        "summary": "分布式事务-tcc-confirm",
+        "operationId": "Goods_CreateOrdersConfirm",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateOrdersReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateOrdersRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Goods"
+        ]
+      }
+    },
+    "/ordersTry": {
+      "post": {
+        "summary": "分布式事务-tcc-try",
+        "operationId": "Goods_CreateOrdersTccTry",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateOrdersReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateOrdersRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Goods"
+        ]
+      }
     }
   },
   "definitions": {
@@ -146,7 +245,12 @@
       "type": "object"
     },
     "v1CreateOrdersReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "dtm_result": {
+          "type": "string"
+        }
+      }
     },
     "v1CreateOrdersRequest": {
       "type": "object",

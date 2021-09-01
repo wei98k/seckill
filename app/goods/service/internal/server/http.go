@@ -1,9 +1,6 @@
 package server
 
 import (
-	pb "github.com/peter-wow/seckill/api/goods/service/v1"
-	"github.com/peter-wow/seckill/app/goods/service/internal/conf"
-	"github.com/peter-wow/seckill/app/goods/service/internal/service"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/metrics"
@@ -11,10 +8,14 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	pb "github.com/peter-wow/seckill/api/goods/service/v1"
+	"github.com/peter-wow/seckill/app/goods/service/internal/conf"
+	"github.com/peter-wow/seckill/app/goods/service/internal/service"
 )
 
 // NewHTTPServer new a HTTP server.
 func NewHTTPServer(c *conf.Server, s *service.GoodsService, logger log.Logger) *http.Server {
+
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -34,6 +35,7 @@ func NewHTTPServer(c *conf.Server, s *service.GoodsService, logger log.Logger) *
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
+
 	pb.RegisterGoodsHTTPServer(srv, s)
 	return srv
 }

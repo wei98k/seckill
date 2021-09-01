@@ -20,12 +20,18 @@ const _ = http.SupportPackageIsVersion1
 type OrderHTTPServer interface {
 	CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderReply, error)
 	CreateSeckillOrder(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error)
+	CreateSeckillOrderCancel(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error)
+	CreateSeckillOrderConfirm(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error)
+	CreateSeckillOrderTry(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error)
 }
 
 func RegisterOrderHTTPServer(s *http.Server, srv OrderHTTPServer) {
 	r := s.Route("/")
 	r.POST("/order", _Order_CreateOrder0_HTTP_Handler(srv))
 	r.POST("/seckill/order", _Order_CreateSeckillOrder0_HTTP_Handler(srv))
+	r.POST("/seckill/orderTry", _Order_CreateSeckillOrderTry0_HTTP_Handler(srv))
+	r.POST("/seckill/orderConfirm", _Order_CreateSeckillOrderConfirm0_HTTP_Handler(srv))
+	r.POST("/seckill/orderCancel", _Order_CreateSeckillOrderCancel0_HTTP_Handler(srv))
 }
 
 func _Order_CreateOrder0_HTTP_Handler(srv OrderHTTPServer) func(ctx http.Context) error {
@@ -66,9 +72,69 @@ func _Order_CreateSeckillOrder0_HTTP_Handler(srv OrderHTTPServer) func(ctx http.
 	}
 }
 
+func _Order_CreateSeckillOrderTry0_HTTP_Handler(srv OrderHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in CreateSeckillOrderRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.order.service.v1.Order/CreateSeckillOrderTry")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CreateSeckillOrderTry(ctx, req.(*CreateSeckillOrderRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*CreateSeckillOrderReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Order_CreateSeckillOrderConfirm0_HTTP_Handler(srv OrderHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in CreateSeckillOrderRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.order.service.v1.Order/CreateSeckillOrderConfirm")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CreateSeckillOrderConfirm(ctx, req.(*CreateSeckillOrderRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*CreateSeckillOrderReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Order_CreateSeckillOrderCancel0_HTTP_Handler(srv OrderHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in CreateSeckillOrderRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.order.service.v1.Order/CreateSeckillOrderCancel")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CreateSeckillOrderCancel(ctx, req.(*CreateSeckillOrderRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*CreateSeckillOrderReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type OrderHTTPClient interface {
 	CreateOrder(ctx context.Context, req *CreateOrderRequest, opts ...http.CallOption) (rsp *CreateOrderReply, err error)
 	CreateSeckillOrder(ctx context.Context, req *CreateSeckillOrderRequest, opts ...http.CallOption) (rsp *CreateSeckillOrderReply, err error)
+	CreateSeckillOrderCancel(ctx context.Context, req *CreateSeckillOrderRequest, opts ...http.CallOption) (rsp *CreateSeckillOrderReply, err error)
+	CreateSeckillOrderConfirm(ctx context.Context, req *CreateSeckillOrderRequest, opts ...http.CallOption) (rsp *CreateSeckillOrderReply, err error)
+	CreateSeckillOrderTry(ctx context.Context, req *CreateSeckillOrderRequest, opts ...http.CallOption) (rsp *CreateSeckillOrderReply, err error)
 }
 
 type OrderHTTPClientImpl struct {
@@ -97,6 +163,45 @@ func (c *OrderHTTPClientImpl) CreateSeckillOrder(ctx context.Context, in *Create
 	pattern := "/seckill/order"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation("/api.order.service.v1.Order/CreateSeckillOrder"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *OrderHTTPClientImpl) CreateSeckillOrderCancel(ctx context.Context, in *CreateSeckillOrderRequest, opts ...http.CallOption) (*CreateSeckillOrderReply, error) {
+	var out CreateSeckillOrderReply
+	pattern := "/seckill/orderCancel"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/api.order.service.v1.Order/CreateSeckillOrderCancel"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *OrderHTTPClientImpl) CreateSeckillOrderConfirm(ctx context.Context, in *CreateSeckillOrderRequest, opts ...http.CallOption) (*CreateSeckillOrderReply, error) {
+	var out CreateSeckillOrderReply
+	pattern := "/seckill/orderConfirm"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/api.order.service.v1.Order/CreateSeckillOrderConfirm"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *OrderHTTPClientImpl) CreateSeckillOrderTry(ctx context.Context, in *CreateSeckillOrderRequest, opts ...http.CallOption) (*CreateSeckillOrderReply, error) {
+	var out CreateSeckillOrderReply
+	pattern := "/seckill/orderTry"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/api.order.service.v1.Order/CreateSeckillOrderTry"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

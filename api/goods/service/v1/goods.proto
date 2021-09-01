@@ -31,6 +31,31 @@ service Goods {
             body: "*"
         };
     }
+
+    // 分布式事务-tcc-try
+    rpc CreateOrdersTccTry(CreateOrdersRequest) returns (CreateOrdersReply) {
+        option (google.api.http) = {
+            post: "/ordersTry",
+            body: "*"
+        };
+    }
+
+    // 分布式事务-tcc-confirm
+    rpc CreateOrdersConfirm (CreateOrdersRequest) returns (CreateOrdersReply) {
+        option (google.api.http) = {
+            post: "/ordersConfirm",
+            body: "*"
+        };
+    }
+
+    // 分布式事务-tcc-cancel
+    rpc CreateOrdersTccCancel(CreateOrdersRequest) returns (CreateOrdersReply) {
+        option (google.api.http) = {
+            post: "/ordersCancel",
+            body: "*"
+        };
+    }
+    
     rpc UpdateOrders (UpdateOrdersRequest) returns (UpdateOrdersReply);
     rpc DeleteOrders (DeleteOrdersRequest) returns (DeleteOrdersReply);
     rpc ListOrders (ListOrdersRequest) returns (ListOrdersReply);
@@ -67,7 +92,9 @@ message GetOrdersReply {
 message CreateOrdersRequest {
     string sn = 1;
 }
-message CreateOrdersReply {}
+message CreateOrdersReply {
+    string dtm_result = 1;
+}
 
 message UpdateOrdersRequest {}
 message UpdateOrdersReply {}

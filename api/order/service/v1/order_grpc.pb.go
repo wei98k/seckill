@@ -20,6 +20,9 @@ const _ = grpc.SupportPackageIsVersion7
 type OrderClient interface {
 	CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*CreateOrderReply, error)
 	CreateSeckillOrder(ctx context.Context, in *CreateSeckillOrderRequest, opts ...grpc.CallOption) (*CreateSeckillOrderReply, error)
+	CreateSeckillOrderTry(ctx context.Context, in *CreateSeckillOrderRequest, opts ...grpc.CallOption) (*CreateSeckillOrderReply, error)
+	CreateSeckillOrderConfirm(ctx context.Context, in *CreateSeckillOrderRequest, opts ...grpc.CallOption) (*CreateSeckillOrderReply, error)
+	CreateSeckillOrderCancel(ctx context.Context, in *CreateSeckillOrderRequest, opts ...grpc.CallOption) (*CreateSeckillOrderReply, error)
 	UpdateOrder(ctx context.Context, in *UpdateOrderRequest, opts ...grpc.CallOption) (*UpdateOrderReply, error)
 	DeleteOrder(ctx context.Context, in *DeleteOrderRequest, opts ...grpc.CallOption) (*DeleteOrderReply, error)
 	GetOrder(ctx context.Context, in *GetOrderRequest, opts ...grpc.CallOption) (*GetOrderReply, error)
@@ -46,6 +49,33 @@ func (c *orderClient) CreateOrder(ctx context.Context, in *CreateOrderRequest, o
 func (c *orderClient) CreateSeckillOrder(ctx context.Context, in *CreateSeckillOrderRequest, opts ...grpc.CallOption) (*CreateSeckillOrderReply, error) {
 	out := new(CreateSeckillOrderReply)
 	err := c.cc.Invoke(ctx, "/api.order.service.v1.Order/CreateSeckillOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderClient) CreateSeckillOrderTry(ctx context.Context, in *CreateSeckillOrderRequest, opts ...grpc.CallOption) (*CreateSeckillOrderReply, error) {
+	out := new(CreateSeckillOrderReply)
+	err := c.cc.Invoke(ctx, "/api.order.service.v1.Order/CreateSeckillOrderTry", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderClient) CreateSeckillOrderConfirm(ctx context.Context, in *CreateSeckillOrderRequest, opts ...grpc.CallOption) (*CreateSeckillOrderReply, error) {
+	out := new(CreateSeckillOrderReply)
+	err := c.cc.Invoke(ctx, "/api.order.service.v1.Order/CreateSeckillOrderConfirm", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderClient) CreateSeckillOrderCancel(ctx context.Context, in *CreateSeckillOrderRequest, opts ...grpc.CallOption) (*CreateSeckillOrderReply, error) {
+	out := new(CreateSeckillOrderReply)
+	err := c.cc.Invoke(ctx, "/api.order.service.v1.Order/CreateSeckillOrderCancel", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -94,6 +124,9 @@ func (c *orderClient) ListOrder(ctx context.Context, in *ListOrderRequest, opts 
 type OrderServer interface {
 	CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderReply, error)
 	CreateSeckillOrder(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error)
+	CreateSeckillOrderTry(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error)
+	CreateSeckillOrderConfirm(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error)
+	CreateSeckillOrderCancel(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error)
 	UpdateOrder(context.Context, *UpdateOrderRequest) (*UpdateOrderReply, error)
 	DeleteOrder(context.Context, *DeleteOrderRequest) (*DeleteOrderReply, error)
 	GetOrder(context.Context, *GetOrderRequest) (*GetOrderReply, error)
@@ -110,6 +143,15 @@ func (UnimplementedOrderServer) CreateOrder(context.Context, *CreateOrderRequest
 }
 func (UnimplementedOrderServer) CreateSeckillOrder(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateSeckillOrder not implemented")
+}
+func (UnimplementedOrderServer) CreateSeckillOrderTry(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSeckillOrderTry not implemented")
+}
+func (UnimplementedOrderServer) CreateSeckillOrderConfirm(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSeckillOrderConfirm not implemented")
+}
+func (UnimplementedOrderServer) CreateSeckillOrderCancel(context.Context, *CreateSeckillOrderRequest) (*CreateSeckillOrderReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSeckillOrderCancel not implemented")
 }
 func (UnimplementedOrderServer) UpdateOrder(context.Context, *UpdateOrderRequest) (*UpdateOrderReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrder not implemented")
@@ -168,6 +210,60 @@ func _Order_CreateSeckillOrder_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OrderServer).CreateSeckillOrder(ctx, req.(*CreateSeckillOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Order_CreateSeckillOrderTry_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSeckillOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServer).CreateSeckillOrderTry(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.order.service.v1.Order/CreateSeckillOrderTry",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServer).CreateSeckillOrderTry(ctx, req.(*CreateSeckillOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Order_CreateSeckillOrderConfirm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSeckillOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServer).CreateSeckillOrderConfirm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.order.service.v1.Order/CreateSeckillOrderConfirm",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServer).CreateSeckillOrderConfirm(ctx, req.(*CreateSeckillOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Order_CreateSeckillOrderCancel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSeckillOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServer).CreateSeckillOrderCancel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.order.service.v1.Order/CreateSeckillOrderCancel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServer).CreateSeckillOrderCancel(ctx, req.(*CreateSeckillOrderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -258,6 +354,18 @@ var Order_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateSeckillOrder",
 			Handler:    _Order_CreateSeckillOrder_Handler,
+		},
+		{
+			MethodName: "CreateSeckillOrderTry",
+			Handler:    _Order_CreateSeckillOrderTry_Handler,
+		},
+		{
+			MethodName: "CreateSeckillOrderConfirm",
+			Handler:    _Order_CreateSeckillOrderConfirm_Handler,
+		},
+		{
+			MethodName: "CreateSeckillOrderCancel",
+			Handler:    _Order_CreateSeckillOrderCancel_Handler,
 		},
 		{
 			MethodName: "UpdateOrder",

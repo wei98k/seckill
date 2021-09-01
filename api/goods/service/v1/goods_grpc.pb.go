@@ -25,6 +25,12 @@ type GoodsClient interface {
 	ListGoods(ctx context.Context, in *ListGoodsRequest, opts ...grpc.CallOption) (*ListGoodsReply, error)
 	GetOrders(ctx context.Context, in *GetOrdersRequest, opts ...grpc.CallOption) (*GetOrdersReply, error)
 	CreateOrders(ctx context.Context, in *CreateOrdersRequest, opts ...grpc.CallOption) (*CreateOrdersReply, error)
+	// 分布式事务-tcc-try
+	CreateOrdersTccTry(ctx context.Context, in *CreateOrdersRequest, opts ...grpc.CallOption) (*CreateOrdersReply, error)
+	// 分布式事务-tcc-confirm
+	CreateOrdersConfirm(ctx context.Context, in *CreateOrdersRequest, opts ...grpc.CallOption) (*CreateOrdersReply, error)
+	// 分布式事务-tcc-cancel
+	CreateOrdersTccCancel(ctx context.Context, in *CreateOrdersRequest, opts ...grpc.CallOption) (*CreateOrdersReply, error)
 	UpdateOrders(ctx context.Context, in *UpdateOrdersRequest, opts ...grpc.CallOption) (*UpdateOrdersReply, error)
 	DeleteOrders(ctx context.Context, in *DeleteOrdersRequest, opts ...grpc.CallOption) (*DeleteOrdersReply, error)
 	ListOrders(ctx context.Context, in *ListOrdersRequest, opts ...grpc.CallOption) (*ListOrdersReply, error)
@@ -101,6 +107,33 @@ func (c *goodsClient) CreateOrders(ctx context.Context, in *CreateOrdersRequest,
 	return out, nil
 }
 
+func (c *goodsClient) CreateOrdersTccTry(ctx context.Context, in *CreateOrdersRequest, opts ...grpc.CallOption) (*CreateOrdersReply, error) {
+	out := new(CreateOrdersReply)
+	err := c.cc.Invoke(ctx, "/api.goods.service.v1.Goods/CreateOrdersTccTry", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *goodsClient) CreateOrdersConfirm(ctx context.Context, in *CreateOrdersRequest, opts ...grpc.CallOption) (*CreateOrdersReply, error) {
+	out := new(CreateOrdersReply)
+	err := c.cc.Invoke(ctx, "/api.goods.service.v1.Goods/CreateOrdersConfirm", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *goodsClient) CreateOrdersTccCancel(ctx context.Context, in *CreateOrdersRequest, opts ...grpc.CallOption) (*CreateOrdersReply, error) {
+	out := new(CreateOrdersReply)
+	err := c.cc.Invoke(ctx, "/api.goods.service.v1.Goods/CreateOrdersTccCancel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *goodsClient) UpdateOrders(ctx context.Context, in *UpdateOrdersRequest, opts ...grpc.CallOption) (*UpdateOrdersReply, error) {
 	out := new(UpdateOrdersReply)
 	err := c.cc.Invoke(ctx, "/api.goods.service.v1.Goods/UpdateOrders", in, out, opts...)
@@ -139,6 +172,12 @@ type GoodsServer interface {
 	ListGoods(context.Context, *ListGoodsRequest) (*ListGoodsReply, error)
 	GetOrders(context.Context, *GetOrdersRequest) (*GetOrdersReply, error)
 	CreateOrders(context.Context, *CreateOrdersRequest) (*CreateOrdersReply, error)
+	// 分布式事务-tcc-try
+	CreateOrdersTccTry(context.Context, *CreateOrdersRequest) (*CreateOrdersReply, error)
+	// 分布式事务-tcc-confirm
+	CreateOrdersConfirm(context.Context, *CreateOrdersRequest) (*CreateOrdersReply, error)
+	// 分布式事务-tcc-cancel
+	CreateOrdersTccCancel(context.Context, *CreateOrdersRequest) (*CreateOrdersReply, error)
 	UpdateOrders(context.Context, *UpdateOrdersRequest) (*UpdateOrdersReply, error)
 	DeleteOrders(context.Context, *DeleteOrdersRequest) (*DeleteOrdersReply, error)
 	ListOrders(context.Context, *ListOrdersRequest) (*ListOrdersReply, error)
@@ -169,6 +208,15 @@ func (UnimplementedGoodsServer) GetOrders(context.Context, *GetOrdersRequest) (*
 }
 func (UnimplementedGoodsServer) CreateOrders(context.Context, *CreateOrdersRequest) (*CreateOrdersReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrders not implemented")
+}
+func (UnimplementedGoodsServer) CreateOrdersTccTry(context.Context, *CreateOrdersRequest) (*CreateOrdersReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrdersTccTry not implemented")
+}
+func (UnimplementedGoodsServer) CreateOrdersConfirm(context.Context, *CreateOrdersRequest) (*CreateOrdersReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrdersConfirm not implemented")
+}
+func (UnimplementedGoodsServer) CreateOrdersTccCancel(context.Context, *CreateOrdersRequest) (*CreateOrdersReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrdersTccCancel not implemented")
 }
 func (UnimplementedGoodsServer) UpdateOrders(context.Context, *UpdateOrdersRequest) (*UpdateOrdersReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrders not implemented")
@@ -318,6 +366,60 @@ func _Goods_CreateOrders_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Goods_CreateOrdersTccTry_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrdersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoodsServer).CreateOrdersTccTry(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.goods.service.v1.Goods/CreateOrdersTccTry",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoodsServer).CreateOrdersTccTry(ctx, req.(*CreateOrdersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Goods_CreateOrdersConfirm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrdersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoodsServer).CreateOrdersConfirm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.goods.service.v1.Goods/CreateOrdersConfirm",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoodsServer).CreateOrdersConfirm(ctx, req.(*CreateOrdersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Goods_CreateOrdersTccCancel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrdersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoodsServer).CreateOrdersTccCancel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.goods.service.v1.Goods/CreateOrdersTccCancel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoodsServer).CreateOrdersTccCancel(ctx, req.(*CreateOrdersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Goods_UpdateOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateOrdersRequest)
 	if err := dec(in); err != nil {
@@ -406,6 +508,18 @@ var Goods_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateOrders",
 			Handler:    _Goods_CreateOrders_Handler,
+		},
+		{
+			MethodName: "CreateOrdersTccTry",
+			Handler:    _Goods_CreateOrdersTccTry_Handler,
+		},
+		{
+			MethodName: "CreateOrdersConfirm",
+			Handler:    _Goods_CreateOrdersConfirm_Handler,
+		},
+		{
+			MethodName: "CreateOrdersTccCancel",
+			Handler:    _Goods_CreateOrdersTccCancel_Handler,
 		},
 		{
 			MethodName: "UpdateOrders",

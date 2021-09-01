@@ -21,6 +21,25 @@ service Order {
             body: "*"
         };
     }
+    rpc CreateSeckillOrderTry (CreateSeckillOrderRequest) returns (CreateSeckillOrderReply) {
+        option (google.api.http) = {
+            post: "/seckill/orderTry"
+            body: "*"
+        };
+    }
+    rpc CreateSeckillOrderConfirm (CreateSeckillOrderRequest) returns (CreateSeckillOrderReply) {
+        option (google.api.http) = {
+            post: "/seckill/orderConfirm"
+            body: "*"
+        };
+    }
+    rpc CreateSeckillOrderCancel (CreateSeckillOrderRequest) returns (CreateSeckillOrderReply) {
+        option (google.api.http) = {
+            post: "/seckill/orderCancel"
+            body: "*"
+        };
+    }
+
     rpc UpdateOrder (UpdateOrderRequest) returns (UpdateOrderReply);
     rpc DeleteOrder (DeleteOrderRequest) returns (DeleteOrderReply);
     rpc GetOrder (GetOrderRequest) returns (GetOrderReply);
@@ -37,7 +56,9 @@ message CreateSeckillOrderRequest {
     int64 gid = 1;
     int64 amount = 2;
 }
-message CreateSeckillOrderReply {}
+message CreateSeckillOrderReply {
+    string dtm_result = 1;
+}
 
 message UpdateOrderRequest {}
 message UpdateOrderReply {}

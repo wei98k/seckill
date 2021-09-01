@@ -91,7 +91,7 @@ func NewJOBServer(c *conf.Server, uo *service.OrderService) *Server {
 
 	// []string{"192.168.2.27:9092"}, "order"
 
-	address := []string{"192.168.0.106:9092"}
+	address := []string{"192.168.0.111:9092"}
 	topic := "order"
 
 	r := kafka.NewReader(kafka.ReaderConfig{

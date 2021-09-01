@@ -19,6 +19,9 @@ const _ = http.SupportPackageIsVersion1
 
 type GoodsHTTPServer interface {
 	CreateOrders(context.Context, *CreateOrdersRequest) (*CreateOrdersReply, error)
+	CreateOrdersConfirm(context.Context, *CreateOrdersRequest) (*CreateOrdersReply, error)
+	CreateOrdersTccCancel(context.Context, *CreateOrdersRequest) (*CreateOrdersReply, error)
+	CreateOrdersTccTry(context.Context, *CreateOrdersRequest) (*CreateOrdersReply, error)
 	GetGoods(context.Context, *GetGoodsRequest) (*GetGoodsReply, error)
 	GetOrders(context.Context, *GetOrdersRequest) (*GetOrdersReply, error)
 }
@@ -28,6 +31,9 @@ func RegisterGoodsHTTPServer(s *http.Server, srv GoodsHTTPServer) {
 	r.GET("/goods/{id}", _Goods_GetGoods0_HTTP_Handler(srv))
 	r.GET("/orders/{id}", _Goods_GetOrders0_HTTP_Handler(srv))
 	r.POST("/orders", _Goods_CreateOrders0_HTTP_Handler(srv))
+	r.POST("/ordersTry", _Goods_CreateOrdersTccTry0_HTTP_Handler(srv))
+	r.POST("/ordersConfirm", _Goods_CreateOrdersConfirm0_HTTP_Handler(srv))
+	r.POST("/ordersCancel", _Goods_CreateOrdersTccCancel0_HTTP_Handler(srv))
 }
 
 func _Goods_GetGoods0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) error {
@@ -93,8 +99,68 @@ func _Goods_CreateOrders0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Contex
 	}
 }
 
+func _Goods_CreateOrdersTccTry0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in CreateOrdersRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.goods.service.v1.Goods/CreateOrdersTccTry")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CreateOrdersTccTry(ctx, req.(*CreateOrdersRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*CreateOrdersReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Goods_CreateOrdersConfirm0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in CreateOrdersRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.goods.service.v1.Goods/CreateOrdersConfirm")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CreateOrdersConfirm(ctx, req.(*CreateOrdersRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*CreateOrdersReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Goods_CreateOrdersTccCancel0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in CreateOrdersRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.goods.service.v1.Goods/CreateOrdersTccCancel")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CreateOrdersTccCancel(ctx, req.(*CreateOrdersRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*CreateOrdersReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type GoodsHTTPClient interface {
 	CreateOrders(ctx context.Context, req *CreateOrdersRequest, opts ...http.CallOption) (rsp *CreateOrdersReply, err error)
+	CreateOrdersConfirm(ctx context.Context, req *CreateOrdersRequest, opts ...http.CallOption) (rsp *CreateOrdersReply, err error)
+	CreateOrdersTccCancel(ctx context.Context, req *CreateOrdersRequest, opts ...http.CallOption) (rsp *CreateOrdersReply, err error)
+	CreateOrdersTccTry(ctx context.Context, req *CreateOrdersRequest, opts ...http.CallOption) (rsp *CreateOrdersReply, err error)
 	GetGoods(ctx context.Context, req *GetGoodsRequest, opts ...http.CallOption) (rsp *GetGoodsReply, err error)
 	GetOrders(ctx context.Context, req *GetOrdersRequest, opts ...http.CallOption) (rsp *GetOrdersReply, err error)
 }
@@ -112,6 +178,45 @@ func (c *GoodsHTTPClientImpl) CreateOrders(ctx context.Context, in *CreateOrders
 	pattern := "/orders"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation("/api.goods.service.v1.Goods/CreateOrders"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *GoodsHTTPClientImpl) CreateOrdersConfirm(ctx context.Context, in *CreateOrdersRequest, opts ...http.CallOption) (*CreateOrdersReply, error) {
+	var out CreateOrdersReply
+	pattern := "/ordersConfirm"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/api.goods.service.v1.Goods/CreateOrdersConfirm"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *GoodsHTTPClientImpl) CreateOrdersTccCancel(ctx context.Context, in *CreateOrdersRequest, opts ...http.CallOption) (*CreateOrdersReply, error) {
+	var out CreateOrdersReply
+	pattern := "/ordersCancel"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/api.goods.service.v1.Goods/CreateOrdersTccCancel"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *GoodsHTTPClientImpl) CreateOrdersTccTry(ctx context.Context, in *CreateOrdersRequest, opts ...http.CallOption) (*CreateOrdersReply, error) {
+	var out CreateOrdersReply
+	pattern := "/ordersTry"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/api.goods.service.v1.Goods/CreateOrdersTccTry"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
